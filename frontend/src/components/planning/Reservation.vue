@@ -53,9 +53,9 @@ export default {
         emitter.emit("updatedInnerPadding", this.innerPadding);
       }
 
-      // Get start and end hour formatted as HH:MM (ex: 08:00) with padding
-      const startHour = this.padDate(this.reservation.startDate);
-      const endHour = this.padDate(this.reservation.endDate);
+      // Get start and end hour formatted as HH:mm (ex: 08:00) with padding
+      const startHour = this.reservation.startDate.format("HH:mm");
+      const endHour = this.reservation.endDate.format("HH:mm");
 
       // Get the top and bottom position of the event
       const startHourAnchor = document.querySelector(`[anchor-value="${startHour}"]`)?.getBoundingClientRect();
@@ -82,7 +82,7 @@ export default {
   },
   methods: {
     padDate(date) {
-      return date.getHours().toString().padStart(2, "0") + ":" + date.getMinutes().toString().padStart(2, "0");
+      return date.format("HH:mm");
     }
   }
 }

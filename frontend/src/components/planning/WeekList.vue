@@ -7,17 +7,17 @@
 
     <!-- Week list body -->
     <div class="w-full overflow-y-auto">
-      <div v-for="week in weeks" :key="week.weekNumber" class="w-full flex flex-row justify-center items-center h-24 week-item hover:bg-gray-50 hover:cursor-pointer duration-150">
+      <div v-for="week in weeks" :key="week.weekNumber" class="w-full flex flex-row justify-center items-center h-24 week-item hover:bg-gray-50 hover:cursor-pointer duration-150" @click="handleWeekClick(week)">
         <div class="w-52 flex flex-row justify-content items-content">
           <span class="font-bold">{{week.weekNumber}}.</span>
 
-          <div><span class="font-extrabold text-3xl">{{week.firstDay.getDate()}}</span> {{this.monthIndexToMonthName[week.firstDay.getUTCMonth()]}}</div>
+          <div><span class="font-extrabold text-3xl">{{week.firstDay.date()}}</span> {{this.monthIndexToMonthName[week.firstDay.month()]}}</div>
           <!-- SVG -->
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
             <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
           </svg>
 
-          <div>{{week.lastDay.getDate()}} {{this.monthIndexToMonthName[week.lastDay.getUTCMonth()]}}</div>
+          <div>{{week.lastDay.date()}} {{this.monthIndexToMonthName[week.lastDay.month()]}}</div>
         </div>
       </div>
     </div>
@@ -25,8 +25,9 @@
 </template>
 
 <script>
-import {getWeekNumber} from "../../utils";
 import {monthIndexToMonthName} from "../../utils";
+import {emitter} from "../../emitter";
+import moment from "moment";
 
 export default {
   name: "WeekList",
@@ -37,30 +38,34 @@ export default {
     }
   },
   created() {
-    // Create a map of weeks with the starting day, the ending day, the week number and the Date object of the first day of the week
-    // The map will be used to display the weeks in the planning
-
-    // For each week in the year
-    const weeks = {};
-    for (let i = 0; i < 52; i++) {
-      // Get the first day of the week
-      const firstDay = new Date(new Date().getFullYear(), 0, 1 + (i * 7));
-      // Get the last day of the week
-      const lastDay = new Date(new Date().getFullYear(), 0, 1 + ((i + 1) * 7) - 1);
-      // Get the week number
-
-      const weekNumber = getWeekNumber(firstDay);
-
-      // Add the week to the map
-      weeks[weekNumber] = {
-        firstDay: firstDay,
-        lastDay: lastDay,
-        weekNumber: weekNumber,
-        date: firstDay
-      }
+    // Moment.js
+    const week = function (d) {
+      return {
+        weekNumber: d.isoWeek(),
+        firstDay: moment(d).startOf('isoWeek').hour(12),
+        lastDay: moment(d).endOf('isoWeek').hour(12)
+      };
     }
 
-    this.weeks = weeks;
+    // get all week between two dates
+    const weeks = function (start, end) {
+      const weeks = [];
+      const current = moment(start);
+      while (current.isBefore(end) || current.isoWeeks() === end.isoWeeks()) {
+        weeks.push(week(current));
+        current.add(1, 'weeks');
+      }
+
+      return weeks;
+    }
+
+    // Get all weeks from 1st of september 2022 to 1st of august 2023
+    this.weeks = weeks(moment(new Date(2022, 8, 1)), moment(new Date(2023, 7, 1)));
+  },
+  methods: {
+    handleWeekClick(week) {
+      emitter.emit("weekClick", week);
+    }
   }
 }
 </script>

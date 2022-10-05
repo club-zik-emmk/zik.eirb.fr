@@ -49,9 +49,9 @@ export default {
         emitter.emit("updatedInnerPadding", this.innerPadding);
       }
 
-      // Get opening and closing hour formatted as HH:MM (ex: 08:00) with padding
-      const openingHour = this.padDate(this.disponibility.openningTime);
-      const closingHour = this.padDate(this.disponibility.closingTime);
+      // Get opening and closing hour formatted as HH:mm (ex: 08:00) with padding
+      const openingHour = this.disponibility.openningTime.format("HH:mm");
+      const closingHour = this.disponibility.closingTime.format("HH:mm");
 
       // Get the top and bottom position of the event
       const openingHourAnchor = document.querySelector(`[anchor-value="${openingHour}"]`)?.getBoundingClientRect();
@@ -74,11 +74,6 @@ export default {
         borderBottom: "2px dashed rgb(0 0 0 / 10%)",
         borderTop: "2px dashed rgb(0 0 0 / 10%)"
       }
-    }
-  },
-  methods: {
-    padDate(date) {
-      return date.getHours().toString().padStart(2, "0") + ":" + date.getMinutes().toString().padStart(2, "0");
     }
   }
 }

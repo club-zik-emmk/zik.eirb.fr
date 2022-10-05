@@ -62,7 +62,6 @@
 
           <!-- Reservations -->
           <Reservation v-for="reservation in currentDay.reservations" :key="reservation.id" :event-anchor-prop="eventAnchor" :inner-padding-prop="innerPadding" :reservation="reservation" />
-
         </div>
       </div>
     </div>
@@ -78,6 +77,7 @@ import {Day as DayType} from "../types";
 import WeekList from "../components/planning/WeekList.vue";
 import Reservation from "../components/planning/Reservation.vue";
 import Disponibility from "../components/planning/Disponibility.vue";
+import {emitter} from "../emitter";
 
 type PlanningData = {
   planningManager: IPlanningLogic,
@@ -105,6 +105,11 @@ export default {
   async created() {
     await this.planningManager.refreshWeek();
     this.currentDay = await this.planningManager.getCurrentDay();
+
+    emitter.on("weekClick", async (week) => {
+      await this.planningManager.setWeek(week.firstDay);
+      this.currentDay = await this.planningManager.getCurrentDay();
+    });
   },
   methods: {
     async handlePreviousDayButtonClick() {
