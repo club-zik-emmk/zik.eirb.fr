@@ -1,0 +1,93 @@
+<template>
+  <div class="flex flex-col justify-center items-center absolute left-24 w-96" :style="this.style">
+    <div class="font-bold text-2xl">{{ reservation.title }}</div>
+    <div class="text-sm">Réservé par {{ reservation.ownerId }}</div>
+    <div class="text-sm">De {{ this.padDate(reservation.startDate) }} à {{ this.padDate(reservation.endDate) }}</div>
+  </div>
+</template>
+
+<script>
+import {emitter} from "../../emitter";
+
+export default {
+  name: "Reservation",
+  props: {
+    reservation: {
+      type: Object,
+      required: true
+    },
+    innerPaddingProp: {
+      type: Number,
+      required: true
+    },
+    eventAnchorProp: {
+      type: Object,
+      required: true
+    }
+  },
+  data() {
+    return {
+      innerPadding: this.innerPaddingProp,
+      eventAnchor: this.eventAnchorProp
+    }
+  },
+  created() {
+    emitter.on("updatedEventAnchor", (eventAnchor) => {
+      this.eventAnchor = eventAnchor;
+    });
+
+    emitter.on("updatedInnerPadding", (innerPadding) => {
+      this.innerPadding = innerPadding;
+    });
+  },
+  computed: {
+    style() {
+      // If not set, find the anchor
+      if (!this.eventAnchor) {
+        this.eventAnchor = document.querySelector(".event-anchor")?.getBoundingClientRect();
+        emitter.emit("updatedEventAnchor", this.eventAnchor);
+      }
+
+      if (this.innerPadding === -1) {
+        this.innerPadding = document.querySelector(`[anchor-value="08:00"]`)?.getBoundingClientRect().height / 2;
+        emitter.emit("updatedInnerPadding", this.innerPadding);
+      }
+
+      // Get start and end hour formatted as HH:MM (ex: 08:00) with padding
+      const startHour = this.padDate(this.reservation.startDate);
+      const endHour = this.padDate(this.reservation.endDate);
+
+      // Get the top and bottom position of the event
+      const startHourAnchor = document.querySelector(`[anchor-value="${startHour}"]`)?.getBoundingClientRect();
+      const endHourAnchor = document.querySelector(`[anchor-value="${endHour}"]`)?.getBoundingClientRect();
+
+      const startHourMiddle = startHourAnchor?.top ? startHourAnchor.top + (startHourAnchor.height / 2) : 0;
+      const endHourMiddle = endHourAnchor?.top ? endHourAnchor.top + (endHourAnchor.height / 2) : 0;
+
+      // Get the height of the event
+      const height = endHourMiddle - startHourMiddle;
+
+      // Calculate relative position to this.eventAnchor
+      const relativeTop = startHourAnchor.top - this.eventAnchor.top + this.innerPadding;
+
+      // Return the style
+      return {
+        top: relativeTop + "px",
+        height: height + "px",
+        backgroundColor: "rgb(255 228 230)",
+        borderBottom: "2px dashed rgb(0 0 0 / 10%)",
+        borderTop: "2px dashed rgb(0 0 0 / 10%)"
+      }
+    }
+  },
+  methods: {
+    padDate(date) {
+      return date.getHours().toString().padStart(2, "0") + ":" + date.getMinutes().toString().padStart(2, "0");
+    }
+  }
+}
+</script>
+
+<style scoped>
+
+</style>
