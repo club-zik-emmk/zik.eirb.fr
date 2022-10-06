@@ -13,8 +13,8 @@ services:
     build: ./backend/
     container_name: backend
     depends_on:
-      redis:
-        condition: service_started
+#      redis:
+#        condition: service_started
       mysql:
         condition: service_healthy
     restart: always

@@ -6,7 +6,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm install
 COPY . .
-RUN npm build
+RUN npm run build
 
 # Serve the project using Apache
 FROM httpd:2.4-alpine
