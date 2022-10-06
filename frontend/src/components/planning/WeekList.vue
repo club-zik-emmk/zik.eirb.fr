@@ -1,23 +1,36 @@
 <template>
   <div class="w-full flex flex-col week-list h-full">
-    <!-- Week list header -->
-    <div class="w-full bg-red-900">
-      Truc
+    <!-- Week list header if mobile -->
+    <div class="w-full p-5 week-list-header" v-show="this.isMobile">
+      <div @click="closeWeekList">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 p-2 border-2 rounded-lg">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </div>
     </div>
+
 
     <!-- Week list body -->
     <div class="w-full overflow-y-auto">
-      <div v-for="week in weeks" :key="week.weekNumber" class="w-full flex flex-row justify-center items-center h-24 week-item hover:bg-gray-50 hover:cursor-pointer duration-150" @click="handleWeekClick(week)">
-        <div class="w-52 flex flex-row justify-content items-content">
-          <span class="font-bold">{{week.weekNumber}}.</span>
+      <div v-for="week in weeks" :key="week.weekNumber"
+           class="w-92 pl-5 lg:pl-14 flex items-center h-24 week-item hover:bg-gray-50 hover:cursor-pointer duration-150"
+           @click="handleWeekClick(week)">
+        <div class="flex flex-row justify-start items-baseline">
+          <span class="font-bold mr-3">{{ week.weekNumber }}.</span>
 
-          <div><span class="font-extrabold text-3xl">{{week.firstDay.date()}}</span> {{this.monthIndexToMonthName[week.firstDay.month()]}}</div>
+          <div><span class="font-extrabold text-3xl">{{ week.firstDay.date() }}</span>
+            {{ this.monthIndexToMonthName[week.firstDay.month()] }}
+          </div>
+
           <!-- SVG -->
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+               stroke="currentColor" class="w-6 h-6 ml-3 mr-3">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"/>
           </svg>
 
-          <div>{{week.lastDay.date()}} {{this.monthIndexToMonthName[week.lastDay.month()]}}</div>
+          <div><span class="font-extrabold text-3xl">{{ week.lastDay.date() }}</span>
+            {{ this.monthIndexToMonthName[week.lastDay.month()] }}
+          </div>
         </div>
       </div>
     </div>
@@ -65,6 +78,18 @@ export default {
   methods: {
     handleWeekClick(week) {
       emitter.emit("weekClick", week);
+
+      if (this.isMobile) {
+        this.closeWeekList();
+      }
+    },
+    closeWeekList() {
+      this.$store.dispatch("closeWeekList");
+    }
+  },
+  computed: {
+    isMobile() {
+      return window.innerWidth < 768;
     }
   }
 }
@@ -81,5 +106,9 @@ export default {
 
 .week-list {
   border-right: solid 1px rgb(241 245 249);
+}
+
+.week-list-header {
+  border-bottom: 1px solid rgb(241 245 249)
 }
 </style>

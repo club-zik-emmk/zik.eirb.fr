@@ -1,13 +1,23 @@
 <template>
   <!-- Right part and day display -->
-  <div class="w-full max-h-full overflow-y-auto px-3 lg:px-16 lg:py-16">
+  <div class="w-full max-h-full overflow-y-auto px-3 lg:px-16 lg:py-6">
     <!-- Day header -->
     <div class="flex flex-col">
 
+      <!-- Actions -->
+      <div class="mb-12 flex flex-row">
+        <div class="bg-red-900 rounded-lg w-32 h-12 mr-6" v-show="this.isMobile" @click="openWeekList">
+
+        </div>
+
+        <div class="bg-blue-900 rounded-lg w-32 h-12">
+        </div>
+      </div>
+
       <!-- Day navigation -->
-      <div class="flex flex-row w-full justify-evenly">
+      <div class="flex flex-row w-full justify-evenly h-28 items-center lg:h-fit">
         <div
-            class="lg:hover:bg-gray-200 duration-300 hover:cursor-pointer flex justify-center items-center rounded-2xl pr-5"
+            class="hover:cursor-pointer flex justify-center items-center rounded-2xl mr-5 p-2"
             @click="handlePreviousDayButtonClick">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                stroke="currentColor" class="w-6 h-6">
@@ -17,11 +27,12 @@
 
         <!-- Day name -->
         <div>
-          <span class="font-bold text-4xl mr-3">{{ this.currentDayName }}</span> <span class="text-4xl">{{ this.currentDayNumber}}</span>
+          <span class="font-bold text-4xl mr-3">{{ this.currentDayName }}</span> <span
+            class="text-4xl">{{ this.currentDayNumber }}</span>
         </div>
 
         <div
-            class="lg:hover:bg-gray-200 duration-300 hover:cursor-pointer flex justify-center items-center rounded-xl pl-5"
+            class="hover:cursor-pointer flex justify-center items-center rounded-xl ml-5 p-2"
             @click="handleNextDayButtonClick">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                stroke="currentColor" class="w-6 h-6">
@@ -36,26 +47,33 @@
       <div class="w-28">
         <!-- Hour -->
         <div v-for="hour in 15" :key="hour">
-          <div class="text-sm mb-9 hour-anchor" :anchor-value="`${hour + 7}`.padStart(2, '0') + ':00'">{{ hour + 7 }}:00</div>
+          <div class="text-sm mb-9 hour-anchor" :anchor-value="`${hour + 7}`.padStart(2, '0') + ':00'">{{
+              hour + 7
+            }}:00
+          </div>
 
           <!-- Quarter bar -->
-          <div class="w-2 h-[2px] bg-gray-300 rounded-xl mb-9 hour-anchor" :anchor-value="`${hour + 7}`.padStart(2, '0') + ':15'"></div>
+          <div class="w-2 h-[2px] bg-gray-300 rounded-xl mb-9 hour-anchor"
+               :anchor-value="`${hour + 7}`.padStart(2, '0') + ':15'"></div>
 
           <!-- Half bar -->
-          <div class="w-5 h-[2px] bg-gray-300 rounded-xl mb-9 hour-anchor" :anchor-value="`${hour + 7}`.padStart(2, '0') + ':30'"></div>
+          <div class="w-5 h-[2px] bg-gray-300 rounded-xl mb-9 hour-anchor"
+               :anchor-value="`${hour + 7}`.padStart(2, '0') + ':30'"></div>
 
           <!-- Quarter bar -->
-          <div class="w-2 h-[2px] bg-gray-300 rounded-xl mb-9 hour-anchor" :anchor-value="`${hour + 7}`.padStart(2, '0') + ':45'"></div>
+          <div class="w-2 h-[2px] bg-gray-300 rounded-xl mb-9 hour-anchor"
+               :anchor-value="`${hour + 7}`.padStart(2, '0') + ':45'"></div>
         </div>
       </div>
 
       <!-- Right part with events -->
       <div class="absolute top-0 left-14 lg:left-28 event-anchor" style="z-index: -1">
         <!-- Disponibilities -->
-        <Disponibility v-for="disponibility in currentDay.disponibilities" :key="disponibility.id" :disponibility="disponibility" />
+        <Disponibility v-for="disponibility in currentDay.disponibilities" :key="disponibility.id"
+                       :disponibility="disponibility"/>
 
         <!-- Reservations -->
-        <Reservation v-for="reservation in currentDay.reservations" :key="reservation.id" :reservation="reservation" />
+        <Reservation v-for="reservation in currentDay.reservations" :key="reservation.id" :reservation="reservation"/>
       </div>
     </div>
   </div>
@@ -104,6 +122,9 @@ export default {
     },
     padDate(date) {
       return `${date.getHours()}`.padStart(2, '0') + ':' + `${date.getMinutes()}`.padStart(2, '0');
+    },
+    openWeekList() {
+      this.$store.dispatch("openWeekList");
     }
   },
   computed: {
@@ -116,6 +137,9 @@ export default {
 
       return list.reverse().join(" ");
     },
+    isMobile() {
+      return document.documentElement.clientWidth < 768;
+    }
   }
 }
 </script>
