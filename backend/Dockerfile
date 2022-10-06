@@ -11,7 +11,7 @@ FROM node:16-alpine AS runner
 # Copy content from dist/
 WORKDIR /app
 COPY --from=build /app/dist /app/dist
-COPY package.json package-lock.json ./dist/
+COPY package.json package-lock.json /app/
 RUN npm install --production
 EXPOSE 5000
 # Run npm run start
