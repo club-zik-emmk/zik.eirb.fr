@@ -11,7 +11,7 @@ services:
 
   backend:
     build: ./backend/
-    container_name: backend
+    container_name: zik-backend
     depends_on:
 #      redis:
 #        condition: service_started
@@ -25,7 +25,7 @@ services:
 
   frontend:
     build: ./frontend/
-    container_name: frontend
+    container_name: zik-frontend
     depends_on:
       - backend
     restart: always
@@ -34,7 +34,7 @@ services:
 
   mysql:
     image: mysql:latest
-    container_name: mysql
+    container_name: zik-mysql
     restart: always
     environment:
       MYSQL_DATABASE: "zik"
