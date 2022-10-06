@@ -96,11 +96,10 @@ class PlanningLogicManager implements IPlanningLogic {
 
     constructor() {
         // Set to today
-        this.currentWeek = moment();
+        // this.currentWeek = moment();
 
         // Current week to 22 august 2022
-        // this.currentWeek = new Date(2022, 7, 22);
-        // this.currentDay = this.currentWeek.getDay();
+        this.currentWeek = moment(new Date(2022, 7, 22, 12));
 
         this.allDisponibilities = [];
         this.allReservations = [];

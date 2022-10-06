@@ -11,42 +11,23 @@ export default {
     disponibility: {
       type: Object,
       required: true
-    },
-    eventAnchorProp: {
-      type: Object,
-      required: true
-    },
-    innerPaddingProp: {
-      type: Number,
-      required: true
     }
-  },
-  data() {
-    return {
-      eventAnchor: this.eventAnchorProp,
-      innerPadding: this.innerPaddingProp
-    }
-  },
-  created() {
-    emitter.on("updatedEventAnchor", (eventAnchor) => {
-      this.eventAnchor = eventAnchor;
-    });
-
-    emitter.on("updatedInnerPadding", (innerPadding) => {
-      this.innerPadding = innerPadding;
-    });
   },
   computed: {
+    eventAnchor() {
+      return this.$store.state.eventAnchor;
+    },
+    innerPadding() {
+      return this.$store.state.innerPadding;
+    },
     style() {
       // If not set, find the anchor
       if (!this.eventAnchor) {
-        this.eventAnchor = document.querySelector(".event-anchor")?.getBoundingClientRect();
-        emitter.emit("updatedEventAnchor", this.eventAnchor);
+        this.$store.commit("setEventAnchor", document.querySelector(".event-anchor")?.getBoundingClientRect());
       }
 
       if (this.innerPadding === -1) {
-        this.innerPadding = document.querySelector(`[anchor-value="08:00"]`)?.getBoundingClientRect().height / 2;
-        emitter.emit("updatedInnerPadding", this.innerPadding);
+        this.$store.dispatch("setInnerPadding", document.querySelector(`[anchor-value="08:00"]`)?.getBoundingClientRect().height / 2);
       }
 
       // Get opening and closing hour formatted as HH:mm (ex: 08:00) with padding

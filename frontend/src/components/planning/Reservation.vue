@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col justify-center items-center absolute left-24 w-96" :style="this.style">
+  <div class="flex flex-col justify-center items-center absolute left-16 lg:left-24 w-56 lg:w-96" :style="this.style">
     <div class="font-bold text-2xl">{{ reservation.title }}</div>
     <div class="text-sm">Réservé par {{ reservation.ownerId }}</div>
     <div class="text-sm">De {{ this.padDate(reservation.startDate) }} à {{ this.padDate(reservation.endDate) }}</div>
@@ -15,42 +15,23 @@ export default {
     reservation: {
       type: Object,
       required: true
-    },
-    innerPaddingProp: {
-      type: Number,
-      required: true
-    },
-    eventAnchorProp: {
-      type: Object,
-      required: true
     }
-  },
-  data() {
-    return {
-      innerPadding: this.innerPaddingProp,
-      eventAnchor: this.eventAnchorProp
-    }
-  },
-  created() {
-    emitter.on("updatedEventAnchor", (eventAnchor) => {
-      this.eventAnchor = eventAnchor;
-    });
-
-    emitter.on("updatedInnerPadding", (innerPadding) => {
-      this.innerPadding = innerPadding;
-    });
   },
   computed: {
+    eventAnchor() {
+      return this.$store.state.eventAnchor;
+    },
+    innerPadding() {
+      return this.$store.state.innerPadding;
+    },
     style() {
       // If not set, find the anchor
       if (!this.eventAnchor) {
-        this.eventAnchor = document.querySelector(".event-anchor")?.getBoundingClientRect();
-        emitter.emit("updatedEventAnchor", this.eventAnchor);
+        this.$store.commit("setEventAnchor", document.querySelector(".event-anchor")?.getBoundingClientRect());
       }
 
       if (this.innerPadding === -1) {
-        this.innerPadding = document.querySelector(`[anchor-value="08:00"]`)?.getBoundingClientRect().height / 2;
-        emitter.emit("updatedInnerPadding", this.innerPadding);
+        this.$store.dispatch("setInnerPadding", document.querySelector(`[anchor-value="08:00"]`)?.getBoundingClientRect().height / 2);
       }
 
       // Get start and end hour formatted as HH:mm (ex: 08:00) with padding
