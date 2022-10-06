@@ -3,8 +3,6 @@
 </template>
 
 <script>
-import {emitter} from "../../emitter";
-
 export default {
   name: "Disponibility",
   props: {
@@ -51,9 +49,10 @@ export default {
       return {
         top: relativeTop + "px",
         height: height + "px",
-        backgroundColor: this.disponibility.allowNoise ? "rgb(220 252 231)" : "rgb(254 249 195)",
+        backgroundColor: this.disponibility.allowNoise ? "#97c4a7" : "#e8d8ab",
         borderBottom: "2px dashed rgb(0 0 0 / 10%)",
-        borderTop: "2px dashed rgb(0 0 0 / 10%)"
+        borderTop: "2px dashed rgb(0 0 0 / 10%)",
+        zIndex: this.disponibility.priority
       }
     }
   }

@@ -1,5 +1,5 @@
 <template>
-  <main class="h-[90vh] overflow-hidden">
+  <main class="h-[92vh] overflow-hidden w-full">
     <!-- Photo showcase -->
     <div class="wrapper">
       <section>

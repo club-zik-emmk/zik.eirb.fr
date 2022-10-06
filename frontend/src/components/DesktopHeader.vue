@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full flex flex-row justify-between px-20 h-[10vh]">
+  <div class="w-full flex flex-row justify-between px-20 h-[8vh] header">
 
     <!-- Logo Zik -->
     <div>
@@ -28,5 +28,7 @@ export default {
 </script>
 
 <style scoped>
-
+.header {
+  border-bottom: solid 1px rgb(91 95 99);
+}
 </style>

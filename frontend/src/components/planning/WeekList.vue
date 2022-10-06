@@ -13,7 +13,7 @@
     <!-- Week list body -->
     <div class="w-full overflow-y-auto">
       <div v-for="week in weeks" :key="week.weekNumber"
-           class="w-92 pl-5 lg:pl-14 flex items-center h-24 week-item hover:bg-gray-50 hover:cursor-pointer duration-150"
+           class="w-92 pl-5 lg:pl-14 flex items-center h-24 week-item hover:bg-gray-700 hover:cursor-pointer duration-150"
            @click="handleWeekClick(week)">
         <div class="flex flex-row justify-start items-baseline">
           <span class="font-bold mr-3">{{ week.weekNumber }}.</span>
@@ -78,6 +78,7 @@ export default {
   methods: {
     handleWeekClick(week) {
       emitter.emit("weekClick", week);
+      document.getElementById("day").scrollTo(0, 0); // Scroll to top of day to avoid disponibility position bug
 
       if (this.isMobile) {
         this.closeWeekList();
@@ -96,19 +97,15 @@ export default {
 </script>
 
 <style scoped>
-.week-item {
-  border-top: solid 1px rgb(241 245 249);
-}
-
-.week-item:last-of-type {
-  border-bottom: solid 1px rgb(241 245 249);
+.week-item:not(:first-of-type) {
+  border-top: solid 1px rgb(91 95 99);
 }
 
 .week-list {
-  border-right: solid 1px rgb(241 245 249);
+  border-right: solid 1px rgb(91 95 99);
 }
 
 .week-list-header {
-  border-bottom: 1px solid rgb(241 245 249)
+  border-bottom: 1px solid rgb(141 145 149);
 }
 </style>

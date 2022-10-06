@@ -55,9 +55,9 @@ export default {
       return {
         top: relativeTop + "px",
         height: height + "px",
-        backgroundColor: "rgb(255 228 230)",
-        borderBottom: "2px dashed rgb(0 0 0 / 10%)",
-        borderTop: "2px dashed rgb(0 0 0 / 10%)"
+        backgroundColor: "rgb(113 113 122)",
+        borderBottom: "2px dashed rgb(255 255 255 / 40%)",
+        borderTop: "2px dashed rgb(255 255 255 / 40%)"
       }
     }
   },

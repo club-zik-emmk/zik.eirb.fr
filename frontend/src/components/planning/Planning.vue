@@ -1,6 +1,6 @@
 <template>
   <!-- Right part and day display -->
-  <div class="w-full max-h-full overflow-y-auto px-3 lg:px-16 lg:py-6">
+  <div id="day" class="w-full max-h-full overflow-y-auto px-3 lg:px-16 lg:py-6">
     <!-- Day header -->
     <div class="flex flex-col">
 

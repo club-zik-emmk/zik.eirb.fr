@@ -1,7 +1,7 @@
 <template>
-  <main class="h-[90vh] flex flex-row justify-center items-center">
+  <main class="h-[92vh] flex flex-row justify-center items-center">
     <!-- Left bar week display -->
-    <div class="h-full bg-white" :class="weekListClass" v-show="isWeekListOpen">
+    <div class="h-full bg-[#2D333A]" :class="weekListClass" v-show="isWeekListOpen">
       <WeekList />
     </div>
 
