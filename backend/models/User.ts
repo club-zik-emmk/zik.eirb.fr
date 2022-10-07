@@ -38,15 +38,15 @@ export class User extends Model<
     InferCreationAttributes<User, { omit: UserAssociations}>
 > {
     declare id: string;
-    declare firstName: string;
-    declare lastName: string;
-    declare displayName: string | null;
-    declare fullName: CreationOptional<string>;
+    //declare firstName: string;
+    //declare lastName: string;
+    //declare displayName: string | null;
+    //declare fullName: CreationOptional<string>;
     declare admin: CreationOptional<boolean>;
     declare member: CreationOptional<boolean>;
 
-    declare group: string;
-    declare year: number;
+    //declare group: string;
+    //declare year: number;
 
     declare createdAt: CreationOptional<Date>;
     declare updatedAt: CreationOptional<Date>;
@@ -89,42 +89,6 @@ export class User extends Model<
                 primaryKey: true,
                 allowNull: false,
                 unique: true
-            },
-            firstName: {
-                type: DataTypes.STRING(100),
-                allowNull: false,
-                validate: {
-                    notEmpty: true
-                }
-            },
-            lastName: {
-                type: DataTypes.STRING(100),
-                allowNull: false,
-                validate: {
-                    notEmpty: true
-                }
-            },
-            displayName: {
-                type: DataTypes.STRING(200),
-                validate: {
-                    notEmpty: true
-                }
-            },
-            fullName: {
-                type: DataTypes.VIRTUAL,
-                get() {
-                    return this.displayName ? this.displayName : `${this.firstName} ${this.lastName}`;
-                },
-            },
-            group: {
-                type: DataTypes.STRING(100),
-                allowNull: false,
-                validate: {
-                    notEmpty: true
-                }
-            },
-            year: {
-                type: DataTypes.SMALLINT.UNSIGNED
             },
             admin: {
                 type: DataTypes.BOOLEAN,
