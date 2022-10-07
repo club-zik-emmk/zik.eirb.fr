@@ -10,8 +10,8 @@
 
         </div>
 
-        <div class="bg-blue-900 rounded-lg w-32 h-12">
-        </div>
+        <router-link to="/book" class="bg-blue-900 rounded-lg w-32 h-12">
+        </router-link>
       </div>
 
       <!-- Day navigation -->
@@ -93,31 +93,30 @@ export default {
   },
   data() {
     return {
-      currentDay: {
-        dayName: "Uh, problem",
-        dayIndex: 0,
-        reservations: [],
-        disponibilities: []
-      },
       planningManager: planningLogicManager,
     }
   },
   async created() {
+    this.$store.dispatch('resetCurrentDay');
+
+    this.planningManager.resetToToday();
     await this.planningManager.refreshWeek();
-    this.currentDay = await this.planningManager.getCurrentDay();
+    this.$store.dispatch("setCurrentDay", await this.planningManager.getCurrentDay());
+
+    console.log(this.currentDay);
 
     emitter.on("weekClick", async (week) => {
       await this.planningManager.setWeek(week.firstDay);
-      this.currentDay = await this.planningManager.getCurrentDay();
+      this.$store.dispatch("setCurrentDay", await this.planningManager.getCurrentDay());
     });
   },
   methods: {
     async handlePreviousDayButtonClick() {
-      this.currentDay = await this.planningManager.getPreviousDay();
+      this.$store.dispatch("setCurrentDay", await this.planningManager.getPreviousDay());
       this.$store.dispatch("resetPositions");
     },
     async handleNextDayButtonClick() {
-      this.currentDay = await this.planningManager.getNextDay();
+      this.$store.dispatch("setCurrentDay", await this.planningManager.getNextDay());
       this.$store.dispatch("resetPositions");
     },
     padDate(date) {
@@ -139,7 +138,13 @@ export default {
     },
     isMobile() {
       return document.documentElement.clientWidth < 768;
+    },
+    currentDay() {
+      return this.$store.state.currentDay;
     }
+  },
+  unmounted() {
+    this.$store.dispatch('resetPositions');
   }
 }
 </script>

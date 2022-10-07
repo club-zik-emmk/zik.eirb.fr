@@ -23,9 +23,11 @@ const routes: Route[] = [
         path: "/planning",
         name: "Planning",
         component: () => import("@/views/PlanningView.vue"),
-        children: [
-
-        ]
+    },
+    {
+        path: "/book",
+        name: "Réserver",
+        component: () => import("@/views/BookingView.vue")
     }
 ];
 

@@ -6,6 +6,12 @@ const store = createStore({
             eventAnchor: null,
             innerPadding: -1,
             isWeekListOpen: false,
+            currentDay: {
+                disponibilities: [],
+                reservations: [],
+                dayIndex: -1,
+                dayName: "Chargement...",
+            }
         }
     },
     mutations: {
@@ -20,7 +26,10 @@ const store = createStore({
         },
         closeWeekList(state) {
             state.isWeekListOpen = false;
-        }
+        },
+        setCurrentDay(state, day) {
+            state.currentDay = day;
+        },
     },
     actions: {
         setEventAnchor({commit}, anchor) {
@@ -38,6 +47,20 @@ const store = createStore({
         resetPositions({commit}) {
             commit("setEventAnchor", null);
             commit("setInnerPadding", -1);
+        },
+        setCurrentDay({commit}, day) {
+            commit("setCurrentDay", day);
+        },
+        resetCurrentDay({commit}) {
+            commit("setCurrentDay", {
+                disponibilities: [],
+                reservations: [],
+                dayIndex: -1,
+                dayName: "Chargement...",
+            });
+        },
+        isCurrentDaySet({state}) {
+            return state.currentDay.dayIndex !== -1;
         }
     }
 });
