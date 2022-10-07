@@ -1,7 +1,7 @@
 <template>
   <main class="h-[92vh] overflow-hidden w-full">
     <!-- Photo showcase -->
-    <div class="wrapper">
+    <div class="wrapper relative">
       <section>
       </section>
       <section>
@@ -10,6 +10,22 @@
       </section>
       <section></section>
       <section></section>
+
+      <div class="h-full w-full absolute top-o left-0 bg-black opacity-50 z-10"></div>
+      <div class="w-full h-full absolute top-0 left-0 z-20 flex items-center justify-center">
+
+        <div class="flex flex-col justify-center items-center">
+          <!-- Logo Zik -->
+          <div>
+
+          </div>
+
+          <!-- Description -->
+          <div class="uppercase text-4xl font-bold">
+            Ouais le zik
+          </div>
+        </div>
+      </div>
     </div>
   </main>
 </template>
@@ -42,24 +58,6 @@ $mq-desktop: "min-width: 630px";
     flex-direction: row;
     width: 100% + ($section-rotate * 2);
     margin-left: percentage($section-rotate) * -.01;
-  }
-  section:not(:first-child):not(:last-child):hover {
-    flex: 2;
-    &:after {
-      opacity: .8;
-    }
-    article {
-      opacity: 1;
-      transform: translateY(0);
-      transition:
-          opacity .2s .2s,
-          transform .2s .2s;
-      @media ($mq-desktop) {
-        transform:
-            translateY(0)
-            skewX(-#{$section-rotate}deg);
-      }
-    }
   }
 }
 

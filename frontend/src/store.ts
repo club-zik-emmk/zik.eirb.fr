@@ -10,7 +10,7 @@ const store = createStore({
                 disponibilities: [],
                 reservations: [],
                 dayIndex: -1,
-                dayName: "Chargement...",
+                dayName: "",
             }
         }
     },
@@ -56,7 +56,7 @@ const store = createStore({
                 disponibilities: [],
                 reservations: [],
                 dayIndex: -1,
-                dayName: "Chargement...",
+                dayName: "",
             });
         },
         isCurrentDaySet({state}) {
