@@ -1,17 +1,33 @@
 <template>
   <!-- Right part and day display -->
-  <div id="day" class="w-full max-h-full overflow-y-auto px-3 lg:px-16 lg:py-6">
+  <div id="day" class="w-full max-h-full overflow-y-auto px-3 lg:px-16 lg:py-6 relative">
+    <div class="w-full h-full" v-show="isLoading">
+      <div class="w-full h-full absolute top-0 left-0 bg-black opacity-50"></div>
+      <div class="w-full h-full flex justify-center items-center absolute top-0 left-0">
+        <scale-loader :loading="isLoading"></scale-loader>
+      </div>
+    </div>
+
     <!-- Day header -->
     <div class="flex flex-col">
 
       <!-- Actions -->
-      <div class="mb-12 flex flex-row">
-        <div class="bg-red-900 rounded-lg w-32 h-12 mr-6" v-show="this.isMobile" @click="openWeekList">
+      <div class="mb-12 flex flex-row w-full flex flex-row justify-between lg:justify-end pt-5 lg:pt-0">
+        <div class="bg-red-900 rounded-lg rounded-lg w-32 h-12 flex flex-row items-center justify-evenly px-3" v-show="this.isMobile" @click="openWeekList">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+          </svg>
 
+          Semaines
         </div>
 
-        <div class="bg-blue-900 rounded-lg w-32 h-12">
-        </div>
+        <router-link to="/book" class="bg-green-400 rounded-lg w-32 h-12 flex flex-row items-center justify-evenly px-3">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+          </svg>
+
+          Réserver
+        </router-link>
       </div>
 
       <!-- Day navigation -->
@@ -93,31 +109,31 @@ export default {
   },
   data() {
     return {
-      currentDay: {
-        dayName: "Uh, problem",
-        dayIndex: 0,
-        reservations: [],
-        disponibilities: []
-      },
       planningManager: planningLogicManager,
+      isLoading: true
     }
   },
   async created() {
+    this.$store.dispatch('resetCurrentDay');
+
+    this.planningManager.resetToToday();
     await this.planningManager.refreshWeek();
-    this.currentDay = await this.planningManager.getCurrentDay();
+    this.$store.dispatch("setCurrentDay", await this.planningManager.getCurrentDay());
+
+    this.isLoading = false;
 
     emitter.on("weekClick", async (week) => {
       await this.planningManager.setWeek(week.firstDay);
-      this.currentDay = await this.planningManager.getCurrentDay();
+      this.$store.dispatch("setCurrentDay", await this.planningManager.getCurrentDay());
     });
   },
   methods: {
     async handlePreviousDayButtonClick() {
-      this.currentDay = await this.planningManager.getPreviousDay();
+      this.$store.dispatch("setCurrentDay", await this.planningManager.getPreviousDay());
       this.$store.dispatch("resetPositions");
     },
     async handleNextDayButtonClick() {
-      this.currentDay = await this.planningManager.getNextDay();
+      this.$store.dispatch("setCurrentDay", await this.planningManager.getNextDay());
       this.$store.dispatch("resetPositions");
     },
     padDate(date) {
@@ -139,7 +155,13 @@ export default {
     },
     isMobile() {
       return document.documentElement.clientWidth < 768;
+    },
+    currentDay() {
+      return this.$store.state.currentDay;
     }
+  },
+  unmounted() {
+    this.$store.dispatch('resetPositions');
   }
 }
 </script>
