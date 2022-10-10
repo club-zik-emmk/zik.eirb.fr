@@ -11,42 +11,6 @@ class User extends sequelize_1.Model {
                 allowNull: false,
                 unique: true
             },
-            firstName: {
-                type: sequelize_1.DataTypes.STRING(100),
-                allowNull: false,
-                validate: {
-                    notEmpty: true
-                }
-            },
-            lastName: {
-                type: sequelize_1.DataTypes.STRING(100),
-                allowNull: false,
-                validate: {
-                    notEmpty: true
-                }
-            },
-            displayName: {
-                type: sequelize_1.DataTypes.STRING(200),
-                validate: {
-                    notEmpty: true
-                }
-            },
-            fullName: {
-                type: sequelize_1.DataTypes.VIRTUAL,
-                get() {
-                    return this.displayName ? this.displayName : `${this.firstName} ${this.lastName}`;
-                },
-            },
-            group: {
-                type: sequelize_1.DataTypes.STRING(100),
-                allowNull: false,
-                validate: {
-                    notEmpty: true
-                }
-            },
-            year: {
-                type: sequelize_1.DataTypes.SMALLINT.UNSIGNED
-            },
             admin: {
                 type: sequelize_1.DataTypes.BOOLEAN,
                 allowNull: false,

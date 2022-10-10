@@ -11,6 +11,11 @@ const store = createStore({
                 reservations: [],
                 dayIndex: -1,
                 dayName: "",
+            },
+            user: {
+                id: "",
+                admin: false,
+                member: false
             }
         }
     },
@@ -30,6 +35,9 @@ const store = createStore({
         setCurrentDay(state, day) {
             state.currentDay = day;
         },
+        setUser(state, user) {
+            state.user = user;
+        }
     },
     actions: {
         setEventAnchor({commit}, anchor) {
@@ -61,6 +69,19 @@ const store = createStore({
         },
         isCurrentDaySet({state}) {
             return state.currentDay.dayIndex !== -1;
+        },
+        isUserSet({state}) {
+            return state.user.id !== '';
+        },
+        setUser({commit}, user) {
+            commit("setUser", user);
+        },
+        resetUser({commit}) {
+            commit("setUser", {
+                id: "",
+                admin: false,
+                member: false
+            });
         }
     }
 });

@@ -28,6 +28,11 @@ const routes: Route[] = [
         path: "/book",
         name: "Réserver",
         component: () => import("@/views/BookingView.vue")
+    },
+    {
+        path: "/auth",
+        name: "Authentification",
+        component: () => import("@/views/AuthView.vue")
     }
 ];
 

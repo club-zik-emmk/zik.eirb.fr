@@ -9,12 +9,8 @@ async function run() {
     (0, models_1.initModels)(db_1.default);
     const araoult = await models_1.User.create({
         id: "araoult",
-        firstName: "Antoine",
-        lastName: "Raoult",
-        group: "info",
-        year: 2024,
     });
-    console.log(`Created user ${araoult.fullName} with id ${araoult.id} and admin ${araoult.admin}`);
+    console.log(`Created user ${araoult.id}`);
     const resa1 = await araoult.createOwnedReservation({
         startDate: new Date("2022-08-22 18:00:00"),
         endDate: new Date("2022-08-22 20:00:00"),
