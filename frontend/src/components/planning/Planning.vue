@@ -123,8 +123,13 @@ export default {
     this.isLoading = false;
 
     emitter.on("weekClick", async (week) => {
+      this.isLoading = true; // Display spinner
+
+      // Set to first day of week
       await this.planningManager.setWeek(week.firstDay);
       this.$store.dispatch("setCurrentDay", await this.planningManager.getCurrentDay());
+
+      this.isLoading = false; // Hide spinner
     });
   },
   methods: {

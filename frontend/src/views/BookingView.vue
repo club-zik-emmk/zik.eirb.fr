@@ -1,33 +1,59 @@
 <template>
-  <div id="day" class="w-full max-h-full overflow-y-auto px-3 lg:px-16 lg:py-6">
-    <router-link to="/planning" class="bg-blue-900 rounded-lg w-32 h-12">Retour</router-link>
+  <div class="h-[92vh] w-full flex justify-center">
+    <div id="day"
+         class="w-full lg:w-1/3 h-full overflow-y-auto px-3 lg:px-16 lg:py-6 flex flex-col justify-between py-7">
+      <div class="w-full flex flex-col">
+        <router-link to="/planning"
+                     class="bg-blue-900 rounded-lg w-32 lg:w-42 h-12 flex flex-row justify-evenly items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+               stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/>
+          </svg>
 
-    <div class="w-full flex justify-center">
-      <div class="uppercase font-bold text-4xl">Réserver</div>
-    </div>
+          <span>Retour</span>
+        </router-link>
 
-    <div class="w-full flex flex-row">
-      <div class="flex flex-col">
-        <div>
-          Heure de début
+        <div class="w-full flex flex-col items-center justify-center my-7">
+          <div class="uppercase font-bold text-4xl">Réserver</div>
+          <div class="text-xl">{{this.currentDay.dayName}}</div>
+        </div>
 
-          <Datepicker v-model="startTime" timePicker minutesIncrement="15" :maxTime="{ hours: 22, minutes: 0 }"
-                      :minTime="{ hours: 8, minutes: 0 }"/>
+        <div class="flex flex-col mb-7">
+          <div>
+            Heure de début
+
+            <Datepicker v-model="startTime" timePicker minutesIncrement="15" :maxTime="{ hours: 22, minutes: 0 }"
+                        :minTime="{ hours: 8, minutes: 0 }"/>
+          </div>
+        </div>
+
+        <div class="flex flex-col mb-7">
+          <div>
+            Heure de fin
+
+            <Datepicker v-model="endTime" timePicker minutesIncrement="15" :maxTime="{ hours: 22, minutes: 0 }"
+                        :minTime="{ hours: 8, minutes: 0 }"/>
+          </div>
+        </div>
+
+        <div class="flex flex-col">
+          <div>
+            Intitulé
+            <input type="text" v-model="title" required class="h-10 rounded-md text-black px-3 w-full">
+          </div>
         </div>
       </div>
 
-      <div class="flex flex-col">
-        <div>
-          Heure de fin
-
-          <Datepicker v-model="endTime" timePicker minutesIncrement="15" :maxTime="{ hours: 22, minutes: 0 }"
-                      :minTime="{ hours: 8, minutes: 0 }"/>
+      <div class="w-full flex justify-center">
+        <div class="w-full py-4 flex justify-center rounded-lg duration-300"
+             :class="{
+          'bg-red-900': !isReservationValid,
+          'bg-green-900': this.isReservationValid,
+          'hover:cursor-pointer': this.isReservationValid,
+          'hover:bg-green-800': this.isReservationValid,
+        }">
+          <span>Réserver</span>
         </div>
-      </div>
-
-      <div class="w-32 h-32"
-           :class="{'bg-red-900': !this.reservationIsAvailable || !this.areTimesValid, 'bg-green-900': reservationIsAvailable && this.areTimesValid}">
-        Réserver
       </div>
     </div>
   </div>
@@ -48,6 +74,7 @@ export default {
         hours: new Date(0, 0, 0, 8).getHours(),
         minutes: new Date(0, 0, 0, 0, 15).getMinutes(),
       },
+      title: ""
     }
   },
   created() {
@@ -60,11 +87,11 @@ export default {
       return this.$store.state.currentDay;
     },
     reservationIsAvailable() {
-      const disponibilities = this.currentDay.disponibilities;
-      const reservations = this.currentDay.reservations;
+      const disponibilities = this.currentDay.disponibilities || [];
+      const reservations = this.currentDay.reservations || [];
 
       // Handle the case where there is no disponibilities
-      if (!disponibilities || disponibilities.length === 0) {
+      if (disponibilities.length === 0) {
         return false;
       }
 
@@ -115,6 +142,9 @@ export default {
       endTime.second(0);
 
       return (!startTime.isSame(endTime, "minute") && startTime.isBefore(endTime));
+    },
+    isReservationValid() {
+      return this.reservationIsAvailable && this.areTimesValid;
     }
   }
 }

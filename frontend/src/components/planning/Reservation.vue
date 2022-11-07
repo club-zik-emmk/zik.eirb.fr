@@ -7,8 +7,6 @@
 </template>
 
 <script>
-import {emitter} from "../../emitter";
-
 export default {
   name: "Reservation",
   props: {
