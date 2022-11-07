@@ -9,7 +9,7 @@ module.exports = {
                 allowNull: false,
                 unique: true
             },
-            firstName: {
+            /* firstName: {
                 type: DataTypes.STRING(100),
                 allowNull: false,
                 validate: {
@@ -38,7 +38,7 @@ module.exports = {
             },
             year: {
                 type: DataTypes.SMALLINT.UNSIGNED
-            },
+            }, */
             admin: {
                 type: DataTypes.BOOLEAN,
                 allowNull: false,
