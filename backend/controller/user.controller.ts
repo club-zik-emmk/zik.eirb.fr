@@ -48,7 +48,7 @@ async function createOrUpdateUser(req: Request, res: Response) {
             return error(res, "Cet id est déjà utilisé !", "USER/ID_ALREADY_USED");
     }
 
-    // Check that firstName is a string and not too long
+    /* // Check that firstName is a string and not too long
     if (!req.body.firstName || req.body.firstName.length > 100)
         return error(res, "Le prénom doit être une chaîne de caractères de maximum 100 caractères !", "VALIDATION/FIRSTNAME_INVALID");
 
@@ -59,7 +59,7 @@ async function createOrUpdateUser(req: Request, res: Response) {
     // Check that displayName is a string and not too long
     if (req.body.displayName && req.body.displayName.length > 200)
         return error(res, "Le nom d'affichage doit être une chaîne de caractères de maximum 200 caractères !", "VALIDATION/DISPLAYNAME_INVALID");
-    
+     */
     // Check that admin is a boolean
     if (typeof req.body.admin !== "boolean")
         return error(res, "Le champ admin doit être un booléen !", "VALIDATION/ADMIN_INVALID");
@@ -68,14 +68,14 @@ async function createOrUpdateUser(req: Request, res: Response) {
     if (typeof req.body.member !== "boolean")
         return error(res, "Le champ member doit être un booléen !", "VALIDATION/MEMBER_INVALID");
 
-    // Check that group is a string and not too long
+    /* // Check that group is a string and not too long
     if (!req.body.group || req.body.group.length > 100)
         return error(res, "Le groupe doit être une chaîne de caractères de maximum 100 caractères !", "VALIDATION/GROUP_INVALID");
     
     // Check that year is a number
     if (!req.body.year || typeof req.body.year !== "number")
         return error(res, "L'année doit être un nombre !", "VALIDATION/YEAR_INVALID");
-
+ */
 
     // Create local user object from request body
 
