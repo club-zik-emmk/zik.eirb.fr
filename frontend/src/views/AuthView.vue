@@ -54,7 +54,7 @@ export default {
       authenticateUser(`${ticket}`, `${token}`)
           .then(student => {
             // Send the student to the header
-            this.$store.commit("setStudent", student);
+            this.$store.commit("setUser", student);
             // Redirect to the root page
             this.$router.push("/");
           })

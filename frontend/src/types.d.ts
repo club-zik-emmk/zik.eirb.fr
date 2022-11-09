@@ -28,6 +28,7 @@ export type Day = {
     reservations: Reservation[],
     dayIndex: number,
     dayName: string,
+    isoString: string
 };
 
 export interface IPlanningLogic {

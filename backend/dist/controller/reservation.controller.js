@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const models_1 = require("../models");
-const models_2 = require("../models");
 const utils_1 = require("../utils");
 const reservationController = {
     listAllReservations,
@@ -47,35 +46,21 @@ async function createOrUpdateReservation(req, res) {
     if (new Date(req.body.startDate) >= new Date(req.body.endDate)) {
         return (0, utils_1.error)(res, "La date de début doit être avant la date de fin", "VALIDATION/START_DATE_BEFORE_END_DATE");
     }
-    //check that the owner is a valid user
-    if (!req.body.ownerId || !(await models_2.User.findByPk(req.body.ownerId))) {
-        return (0, utils_1.error)(res, "L'utilisateur propriétaire n'existe pas", "VALIDATION/OWNER_INVALID");
-    }
     // Create local user object from request body
     const reservation = {
         title: req.body.title,
         startDate: req.body.startDate,
         endDate: req.body.endDate,
-        ownerId: req.body.ownerId,
+        // @ts-ignore
+        ownerId: req.session.user.id,
     };
-    if (req.params.id) {
-        return models_1.Reservation.update(reservation, { where: { id: req.params.id } })
-            .then(() => {
-            return (0, utils_1.success)(res, "Réservation modifiée avec succès !", "RESERVATION/UPDATED", null);
-        }).catch((e) => {
-            console.log(e);
-            return (0, utils_1.error)(res, "Erreur lors de modification de la réservation!", "RESERVATION/UPDATE_FAILED");
-        });
-    }
-    else {
-        return models_1.Reservation.create(reservation)
-            .then((user) => {
-            return (0, utils_1.success)(res, "Réservation créée avec succès !", "RESERVATION/CREATED", reservation);
-        }).catch((e) => {
-            console.log(e);
-            return (0, utils_1.error)(res, "Erreur lors de la création de la réservation!", "RESERVATION/CREATE_FAILED");
-        });
-    }
+    return models_1.Reservation.create(reservation)
+        .then((user) => {
+        return (0, utils_1.success)(res, "Réservation créée avec succès !", "RESERVATION/CREATED", reservation);
+    }).catch((e) => {
+        console.log(e);
+        return (0, utils_1.error)(res, "Erreur lors de la création de la réservation!", "RESERVATION/CREATE_FAILED");
+    });
 }
 function deleteReservationById(req, res) {
     const reservationId = req.params.id;

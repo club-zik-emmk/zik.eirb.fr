@@ -109,7 +109,8 @@ class PlanningLogicManager implements IPlanningLogic {
           disponibilities: this.weekDisponibilities[dayIndex],
           reservations: this.weekReservations[dayIndex],
           dayIndex: this.currentWeek.date(),
-          dayName: `${dayIndexToDayName[dayIndex]} ${this.currentWeek.date()} ${monthIndexToMonthName[this.currentWeek.month()]}`
+          dayName: `${dayIndexToDayName[dayIndex]} ${this.currentWeek.date()} ${monthIndexToMonthName[this.currentWeek.month()]}`,
+            isoString: this.currentWeek.toISOString(),
         };
     }
 

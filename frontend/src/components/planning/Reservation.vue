@@ -1,8 +1,10 @@
 <template>
-  <div class="flex flex-col justify-center items-center absolute left-16 lg:left-24 w-56 lg:w-96" :style="this.style">
+    <div class="flex flex-col justify-center items-center absolute left-16 lg:left-24 w-56 lg:w-96 flex-wrap  " :style="this.style">
     <div class="font-bold text-2xl">{{ reservation.title }}</div>
-    <div class="text-sm">Réservé par {{ reservation.ownerId }}</div>
-    <div class="text-sm">De {{ this.padDate(reservation.startDate) }} à {{ this.padDate(reservation.endDate) }}</div>
+    <div class="flex flex-col justify-center items-center">
+      <div class="text-xs">Réservé par {{ reservation.ownerId }}</div>
+      <div class="text-xs">De {{ this.padDate(reservation.startDate) }} à {{ this.padDate(reservation.endDate) }}</div>
+    </div>
   </div>
 </template>
 
@@ -40,14 +42,14 @@ export default {
       const startHourAnchor = document.querySelector(`[anchor-value="${startHour}"]`)?.getBoundingClientRect();
       const endHourAnchor = document.querySelector(`[anchor-value="${endHour}"]`)?.getBoundingClientRect();
 
-      const startHourMiddle = startHourAnchor?.top ? startHourAnchor.top + (startHourAnchor.height / 2) : 0;
-      const endHourMiddle = endHourAnchor?.top ? endHourAnchor.top + (endHourAnchor.height / 2) : 0;
+      const startHourCalculated = startHourAnchor?.bottom ? startHourAnchor.bottom: 0;
+      const endHourCalculated = endHourAnchor?.top ? endHourAnchor.top: 0;
 
       // Get the height of the event
-      const height = endHourMiddle - startHourMiddle;
+      const height = endHourCalculated - startHourCalculated;
 
       // Calculate relative position to this.eventAnchor
-      const relativeTop = startHourAnchor.top - this.eventAnchor.top + this.innerPadding;
+      const relativeTop = startHourCalculated - this.eventAnchor.top;
 
       // Return the style
       return {

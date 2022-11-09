@@ -43,27 +43,32 @@ async function createOrUpdateUser(req, res) {
         else if (await models_1.User.findByPk(req.body.id))
             return (0, utils_1.error)(res, "Cet id est déjà utilisé !", "USER/ID_ALREADY_USED");
     }
-    // Check that firstName is a string and not too long
+    /* // Check that firstName is a string and not too long
     if (!req.body.firstName || req.body.firstName.length > 100)
-        return (0, utils_1.error)(res, "Le prénom doit être une chaîne de caractères de maximum 100 caractères !", "VALIDATION/FIRSTNAME_INVALID");
+        return error(res, "Le prénom doit être une chaîne de caractères de maximum 100 caractères !", "VALIDATION/FIRSTNAME_INVALID");
+
     // Check that lastName is a string and not too long
     if (!req.body.lastName || req.body.lastName.length > 100)
-        return (0, utils_1.error)(res, "Le nom doit être une chaîne de caractères de maximum 100 caractères !", "VALIDATION/LASTNAME_INVALID");
+        return error(res, "Le nom doit être une chaîne de caractères de maximum 100 caractères !", "VALIDATION/LASTNAME_INVALID");
+    
     // Check that displayName is a string and not too long
     if (req.body.displayName && req.body.displayName.length > 200)
-        return (0, utils_1.error)(res, "Le nom d'affichage doit être une chaîne de caractères de maximum 200 caractères !", "VALIDATION/DISPLAYNAME_INVALID");
+        return error(res, "Le nom d'affichage doit être une chaîne de caractères de maximum 200 caractères !", "VALIDATION/DISPLAYNAME_INVALID");
+     */
     // Check that admin is a boolean
     if (typeof req.body.admin !== "boolean")
         return (0, utils_1.error)(res, "Le champ admin doit être un booléen !", "VALIDATION/ADMIN_INVALID");
     // Check that member is a boolean
     if (typeof req.body.member !== "boolean")
         return (0, utils_1.error)(res, "Le champ member doit être un booléen !", "VALIDATION/MEMBER_INVALID");
-    // Check that group is a string and not too long
+    /* // Check that group is a string and not too long
     if (!req.body.group || req.body.group.length > 100)
-        return (0, utils_1.error)(res, "Le groupe doit être une chaîne de caractères de maximum 100 caractères !", "VALIDATION/GROUP_INVALID");
+        return error(res, "Le groupe doit être une chaîne de caractères de maximum 100 caractères !", "VALIDATION/GROUP_INVALID");
+    
     // Check that year is a number
     if (!req.body.year || typeof req.body.year !== "number")
-        return (0, utils_1.error)(res, "L'année doit être un nombre !", "VALIDATION/YEAR_INVALID");
+        return error(res, "L'année doit être un nombre !", "VALIDATION/YEAR_INVALID");
+ */
     // Create local user object from request body
     const user = {
         id: req.params.id || req.body.id,

@@ -10,6 +10,5 @@ const router = express_1.default.Router();
 router.get("/", reservation_controller_1.default.listAllReservations);
 router.get("/:id", reservation_controller_1.default.getReservationById);
 router.post("/", (0, permission_middleware_1.can)(permission_middleware_1.PERMISSIONS.MANAGE_USERS), reservation_controller_1.default.createOrUpdateReservation);
-router.put("/:id", (0, permission_middleware_1.can)(permission_middleware_1.PERMISSIONS.MANAGE_USERS), reservation_controller_1.default.createOrUpdateReservation);
 router.delete("/:id", (0, permission_middleware_1.can)(permission_middleware_1.PERMISSIONS.MANAGE_USERS), reservation_controller_1.default.deleteReservationById);
 exports.default = router;

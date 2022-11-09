@@ -1,6 +1,6 @@
 <template>
   <!-- Right part and day display -->
-  <div id="day" class="w-full max-h-full overflow-y-auto px-3 lg:px-16 lg:py-6 relative">
+  <div id="day" class="w-full px-3 lg:px-16 lg:py-6 relative" :class="isLoading ? 'h-[92vh] overflow-hidden' : 'max-h-full overflow-y-auto'">
     <div class="w-full h-full" v-show="isLoading">
       <div class="w-full h-full absolute top-0 left-0 bg-black opacity-50"></div>
       <div class="w-full h-full flex justify-center items-center absolute top-0 left-0">
@@ -9,7 +9,7 @@
     </div>
 
     <!-- Day header -->
-    <div class="flex flex-col">
+    <div class="flex flex-col" v-show="!isLoading">
 
       <!-- Actions -->
       <div class="mb-12 flex flex-row w-full flex flex-row justify-between lg:justify-end pt-5 lg:pt-0">
@@ -21,7 +21,7 @@
           Semaines
         </div>
 
-        <router-link to="/book" class="bg-green-400 rounded-lg w-32 h-12 flex flex-row items-center justify-evenly px-3">
+        <router-link to="/book" class="bg-green-400 rounded-lg w-32 h-12 flex flex-row items-center justify-evenly px-3" v-if="isUserMember">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
           </svg>
@@ -163,6 +163,9 @@ export default {
     },
     currentDay() {
       return this.$store.state.currentDay;
+    },
+    isUserMember() {
+      return this.$store.state.user.member;
     }
   },
   unmounted() {

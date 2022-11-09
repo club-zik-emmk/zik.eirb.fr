@@ -51,7 +51,8 @@
           'bg-green-900': this.isReservationValid,
           'hover:cursor-pointer': this.isReservationValid,
           'hover:bg-green-800': this.isReservationValid,
-        }">
+        }"
+        @click="onBookingButtonClick">
           <span>Réserver</span>
         </div>
       </div>
@@ -61,6 +62,8 @@
 
 <script>
 import moment from "moment";
+import axios from "axios";
+import axiosInstance from "@/axiosInstance";
 
 export default {
   name: "BookingView",
@@ -80,6 +83,31 @@ export default {
   created() {
     if (!this.$store.dispatch("isCurrentDaySet")) {
       this.$router.push("/planning");
+    }
+  },
+  methods: {
+    onBookingButtonClick() {
+      if (!this.isReservationValid) {
+        return;
+      }
+
+      console.log(this.currentDay)
+      const day = moment(this.currentDay.isoString).format("YYYY-MM-DD");
+
+      // Format to "YYYY-MM-DD HH:mm:ss"
+      const formattedStartTime = `${day} ${this.startTime.hours.toString().padStart(2, "0")}:${this.startTime.minutes.toString().padStart(2, "0")}:00`;
+      const formattedEndTime = `${day} ${this.endTime.hours.toString().padStart(2, "0")}:${this.endTime.minutes.toString().padStart(2, "0")}:00`;
+
+      axiosInstance.post("/api/v1/reservations", {
+        title: this.title,
+        startDate: formattedStartTime,
+        endDate: formattedEndTime,
+        ownerId: this.$store.state.user.id,
+      }).then(() => {
+        this.$router.push("/planning");
+      }).catch((error) => {
+        console.log(error);
+      });
     }
   },
   computed: {
