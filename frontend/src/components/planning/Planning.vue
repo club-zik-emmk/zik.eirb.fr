@@ -1,6 +1,6 @@
 <template>
   <!-- Right part and day display -->
-  <div id="day" class="w-full px-3 lg:px-16 lg:py-6 relative" :class="isLoading ? 'h-[92vh] overflow-hidden' : 'max-h-full overflow-y-auto'">
+  <div id="day" class="w-full px-3 lg:px-16 lg:py-6 relative " :class="isLoading ? 'h-[92vh] overflow-hidden' : 'max-h-full overflow-y-auto'">
     <div class="w-full h-full" v-show="isLoading">
       <div class="w-full h-full absolute top-0 left-0 bg-black opacity-50"></div>
       <div class="w-full h-full flex justify-center items-center absolute top-0 left-0">
@@ -83,7 +83,7 @@
       </div>
 
       <!-- Right part with events -->
-      <div class="absolute top-0 left-14 lg:left-28 event-anchor" style="z-index: -1">
+      <div class="absolute top-0 left-14 lg:left-28 event-anchor">
         <!-- Disponibilities -->
         <Disponibility v-for="disponibility in currentDay.disponibilities" :key="disponibility.id"
                        :disponibility="disponibility"/>
@@ -122,6 +122,13 @@ export default {
 
     this.isLoading = false;
 
+    emitter.on('refreshDay', async () => {
+      await this.planningManager.refreshWeek();
+      this.$store.dispatch("setCurrentDay", await this.planningManager.getCurrentDay());
+
+      this.refreshAnchors();
+    });
+
     emitter.on("weekClick", async (week) => {
       this.isLoading = true; // Display spinner
 
@@ -146,6 +153,10 @@ export default {
     },
     openWeekList() {
       this.$store.dispatch("openWeekList");
+    },
+    refreshAnchors() {
+      this.$store.commit("setEventAnchor", document.querySelector(".event-anchor")?.getBoundingClientRect());
+      this.$store.dispatch("setInnerPadding", document.querySelector(`[anchor-value="08:00"]`)?.getBoundingClientRect().height / 2);
     }
   },
   computed: {
