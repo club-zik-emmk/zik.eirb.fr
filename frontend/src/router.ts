@@ -1,5 +1,6 @@
 import {createRouter, createWebHashHistory} from "vue-router";
 import {Router} from "vue-router";
+import store from "./store";
 
 type RouteMeta = {
     requiresAuth: boolean;
@@ -33,6 +34,15 @@ const routes: Route[] = [
         path: "/auth",
         name: "Authentification",
         component: () => import("@/views/AuthView.vue")
+    },
+    {
+        path: "/admin/users",
+        name: "Gestion des utilisateurs",
+        component: () => import("@/views/admin/UserManagementView.vue"),
+        meta: {
+            requiresAuth: true,
+            requiresAdmin: true
+        }
     }
 ];
 
@@ -42,7 +52,13 @@ const router: Router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    next();
+    if (to.meta?.requiresAuth && store.state.user.id === "") {
+        next({name: "Authentification"});
+    } else if (to.meta?.requiresAdmin && !store.state.user?.admin) {
+        next({name: "Home"});
+    } else {
+        next();
+    }
 });
 
 export default router;

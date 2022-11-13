@@ -12,6 +12,7 @@
     "@vuepic/vue-datepicker": "^3.5.0",
     "axios": "^0.27.2",
     "dotenv": "^16.0.3",
+    "flowbite": "^1.5.3",
     "mitt": "^3.0.0",
     "moment": "^2.29.4",
     "secure-ls": "^1.2.6",

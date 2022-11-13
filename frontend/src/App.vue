@@ -7,8 +7,8 @@
 </template>
 
 <script>
-import DesktopHeader from "@/components/DesktopHeader.vue";
-import MobileHeader from "@/components/MobileHeader.vue";
+import DesktopHeader from "@/components/headers/DesktopHeader.vue";
+import MobileHeader from "@/components/headers/MobileHeader.vue";
 
 
 export default {
