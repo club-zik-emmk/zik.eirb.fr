@@ -9,13 +9,16 @@
 
 
       <!-- Nav bar -->
-      <nav class="w-64 py-7 flex justify-evenly items-center">
+      <nav class="py-7 flex justify-evenly items-center">
         <router-link to="/" class="rounded-3xl hover:bg-red-900 px-7 py-2 duration-300">Accueil</router-link>
         <router-link to="/planning" class="rounded-3xl hover:bg-red-900 px-7 py-2 duration-300">Planning</router-link>
+
+        <a :href="cotisationLink" class="rounded-3xl hover:bg-red-900 px-7 py-2 duration-300" v-show="!isUserAuthenticated || !isUserMember" target="_blank">Cotiser</a>
 
         <a href="#" class="rounded-3xl hover:bg-red-900 px-7 py-2 duration-300" v-show="isUserAuthenticated && !isUserMember">Contact</a>
 
         <DropdownNav v-if="isUserAuthenticated && isUserAdmin" title="Admin" :links="adminLinks"></DropdownNav>
+        <DropdownNav v-if="isUserAuthenticated && isUserMember" title="Membre" :links="memberLinks"></DropdownNav>
 
       </nav>
     </div>
@@ -36,14 +39,15 @@
 <script>
 import {logoutUser} from "@/services/authenticationService";
 import DropdownNav from "@/components/DropdownNav.vue";
-import links from "./links.json";
+import links from "@/links.json";
 
 export default {
   name: "DesktopHeader",
   components: {DropdownNav},
   data() {
     return {
-      adminLinks: links.admin
+      adminLinks: links.admin,
+      memberLinks: links.member,
     }
   },
   computed: {
@@ -55,12 +59,16 @@ export default {
     },
     isUserMember() {
       return this.$store.state.user.member;
+    },
+    cotisationLink() {
+      return import.meta.env.VITE_ZIK_COTISATION_LINK;
     }
   },
   methods: {
     logout() {
       logoutUser().then(() => {
         this.$store.dispatch("resetUser");
+        this.$router.push("/");
       })
     },
   },

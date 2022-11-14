@@ -43,6 +43,22 @@ const routes: Route[] = [
             requiresAuth: true,
             requiresAdmin: true
         }
+    },
+    {
+        path: "/member/me",
+        name: "Mon compte",
+        component: () => import("@/views/member/MemberView.vue"),
+        meta: {
+            requiresAuth: true
+        }
+    },
+    {
+        path: "/member/events",
+        name: "Événements",
+        component: () => import("@/views/member/EventsView.vue"),
+        meta: {
+            requiresAuth: true
+        }
     }
 ];
 

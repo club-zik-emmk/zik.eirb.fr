@@ -1,8 +1,0 @@
-{
-  "admin": [
-    {
-      "title": "Gestion des utilisateurs",
-      "path": "/admin/users"
-    }
-  ]
-}

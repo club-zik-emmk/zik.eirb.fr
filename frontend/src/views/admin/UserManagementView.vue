@@ -5,7 +5,7 @@
       <!-- Left side -->
       <div class="flex flex-col justify-center h-full">
         <div class="w-96 h-96 bg-red-900 rounded-lg overflow-hidden">
-          <input type="text" class="w-full h-[10%]"/>
+          <input type="text" class="w-full h-[10%] text-black px-5" v-model="searchQuery" @input="handleSearch"/>
 
           <div class="flex flex-col overflow-y-auto shrink-0 h-[90%]">
             <div v-for="(user, index) in users"
@@ -24,7 +24,7 @@
       <!-- Right side -->
       <div class="flex items-center justify-center flex-1 bg-green-900">
         <div class="flex flex-col">
-          <input type="text" class="w-96 h-12 rounded-lg text-black px-5" placeholder="CAS UID" v-model="selectedUser.data.id"/>
+          <input type="text" class="w-96 h-12 rounded-lg text-black px-5" placeholder="CAS UID" v-model="selectedUser.data.id" :disabled="isUserSelected"/>
 
           <div class="flex flex-row mt-2">
             <input type="checkbox" v-model="selectedUser.data.member">
@@ -65,7 +65,9 @@ export default {
           member: false,
           admin: false,
         }
-      }
+      },
+      usersBackup: [],
+      searchQuery: "",
     }
   },
   created() {
@@ -131,7 +133,16 @@ export default {
     refreshUsers() {
       axiosInstance.get("/api/v1/users").then(response => {
         this.users = response.data.data;
+        this.usersBackup = response.data.data;
       });
+    },
+    handleSearch() {
+      if (this.searchQuery === "") {
+        this.users = this.usersBackup;
+        return;
+      }
+
+      this.users = this.usersBackup.filter(user => user.id.includes(this.searchQuery));
     }
   }
 }
