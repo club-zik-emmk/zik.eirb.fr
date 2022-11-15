@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import links from "./links.json";
+import links from "@/links.json";
 
 export default {
   name: "MobileHeader",

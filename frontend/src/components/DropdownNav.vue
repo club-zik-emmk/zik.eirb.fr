@@ -1,13 +1,13 @@
 <template>
-  <div class="flex flex-col z-20 dropdown-nav">
+  <div class="flex flex-col z-20" :class="dynamicClassName">
     <div class="bg-red-900 px-5 py-2 rounded-md uppercase hover:cursor-pointer w-44 text-center" @click="onButtonClick">
-      Admin
+      {{title}}
     </div>
 
     <div class="relative">
       <div v-show="isOpen" class="absolute top-0 flex flex-col">
         <router-link v-for="link in links" :key="link.title" :to="link.path"
-                     class="bg-red-900 rounded-md uppercase px-5 py-2 hover:cursor-pointer mt-1 text-center">
+                     class="bg-red-900 rounded-md uppercase px-5 py-2 hover:cursor-pointer mt-1 text-center w-44">
           {{ link.title }}
         </router-link>
       </div>
@@ -41,12 +41,17 @@ export default {
       isOpen: false
     }
   },
+  computed: {
+    dynamicClassName() {
+      return `dropdown-nav-${this.title}`;
+    }
+  },
   methods: {
     onButtonClick() {
       this.isOpen = !this.isOpen;
     },
     handleClickEvent() {
-      if (!event.target.closest(".dropdown-nav")) {
+      if (!event.target.closest(`.${this.dynamicClassName}`)) {
         this.isOpen = false;
       }
     }

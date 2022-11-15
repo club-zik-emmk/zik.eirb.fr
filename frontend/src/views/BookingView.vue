@@ -62,7 +62,6 @@
 
 <script>
 import moment from "moment";
-import axios from "axios";
 import axiosInstance from "@/axiosInstance";
 
 export default {
@@ -91,7 +90,6 @@ export default {
         return;
       }
 
-      console.log(this.currentDay)
       const day = moment(this.currentDay.isoString).format("YYYY-MM-DD");
 
       // Format to "YYYY-MM-DD HH:mm:ss"
@@ -111,6 +109,9 @@ export default {
     }
   },
   computed: {
+    isUserAdmin() {
+      return this.$store.state.user.admin;
+    },
     currentDay() {
       return this.$store.state.currentDay;
     },
@@ -123,12 +124,13 @@ export default {
         return false;
       }
 
-      // Reservation date is the same day as the one in the disponibilities
+      // Create the Moment objects
       const reservationStartDate = moment(disponibilities[0].startDate);
       reservationStartDate.hour(this.startTime.hours);
       reservationStartDate.minute(this.startTime.minutes);
       reservationStartDate.second(0);
 
+      // Create the Moment objects
       const reservationEndDate = moment(disponibilities[0].startDate);
       reservationEndDate.hour(this.endTime.hours);
       reservationEndDate.minute(this.endTime.minutes);
@@ -145,34 +147,41 @@ export default {
             && !reservationEndDate.isSame(endDate, "minute");
       });
 
-      // Check that the start time or the end time is not in a reservation
+      // Check that the current reservation doesn't overlap with another one
       const isDuringReservation = reservations.some((reservation) => {
         const startDate = moment(reservation.startDate);
         const endDate = moment(reservation.endDate);
 
-        return reservationStartDate.isBetween(startDate, endDate)
-            || reservationEndDate.isBetween(startDate, endDate)
-            || reservationStartDate.isSame(startDate, "minute")
-            || reservationEndDate.isSame(endDate, "minute");
+        return (reservationStartDate.isBetween(startDate, endDate) || reservationStartDate.isSameOrBefore(startDate))
+            && (reservationEndDate.isBetween(startDate, endDate) || reservationEndDate.isSameOrAfter(endDate));
       });
 
-      return isDuringDisponibility && !isDuringReservation;
+      // Check that the span of the reservation is less or equal to 3 hours
+      const isSpanValid = reservationEndDate.diff(reservationStartDate, "hours") <= 3;
+
+      return isDuringDisponibility && !isDuringReservation && (isSpanValid || this.isUserAdmin);
     },
     areTimesValid() {
+      // Create the Moment objects
       const startTime = moment();
       startTime.hour(this.startTime.hours);
       startTime.minute(this.startTime.minutes);
       startTime.second(0);
 
+      // Create the Moment objects
       const endTime = moment();
       endTime.hour(this.endTime.hours);
       endTime.minute(this.endTime.minutes);
       endTime.second(0);
 
+      // Check that the start and end times are different
+      // and that the end time is after the start time
       return (!startTime.isSame(endTime, "minute") && startTime.isBefore(endTime));
     },
     isReservationValid() {
-      return this.reservationIsAvailable && this.areTimesValid;
+      return this.reservationIsAvailable
+          && this.areTimesValid
+          && this.title !== "";
     }
   }
 }
