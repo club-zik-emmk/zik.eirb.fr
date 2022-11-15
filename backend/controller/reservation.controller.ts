@@ -78,20 +78,32 @@ async function createOrUpdateReservation(req: Request, res: Response) {
 
 
 function deleteReservationById(req: Request, res: Response) {
-    const reservationId = req.params.id;
-
-    return Reservation.destroy({where: {id: reservationId}})
-        .then((affectedRows) => {
-            if (affectedRows) {
-                return success(res, "Réservation supprimée avec succès !", "RESERVATION/DELETED", reservationId);
+    // @ts-ignore
+    // check that the user is connected
+    if (!req.session.user) {
+        return error(res, "Vous devez être connecté pour supprimer une réservation", "AUTH/NOT_AUTHENTICATED", 401);
+    }
+    // Check that the user is the owner of the reservation or an admin
+    return Reservation.findByPk(req.params.id).then((reservation) => {
+        if (reservation) {
+            // @ts-ignore
+            if (reservation.ownerId === req.session.user.id || req.session.user.isAdmin) {
+                return reservation.destroy().then(() => {
+                    return success(res, "Réservation supprimée avec succès !", "RESERVATION/DELETED", reservation.id);
+                }).catch((e) => {
+                    console.log(e);
+                    return error(res, "Erreur lors de la suppression de la réservation", "RESERVATION/DELETE_FAILED");
+                });
             } else {
-                return error(res, "Réservation introuvable !", "RESERVATION/NOT_FOUND", 404);
+                return error(res, "Vous n'êtes pas autorisé à supprimer cette réservation", "RESERVATION/DELETE_NOT_ALLOWED", 403);
             }
-        })
-        .catch((e) => {
-            console.log(e);
-            return error(res, "Erreur lors de la suppression de la réservation!", "RESERVATION/DELETE_FAILED");
-        });
+        } else {
+            return error(res, "Réservation introuvable !", "RESERVATION/NOT_FOUND", 404);
+        }
+    }).catch((e) => {
+        console.log(e);
+        return error(res, "Erreur lors de la suppression de la réservation", "RESERVATION/DELETE_FAILED");
+    });
 }
 
 
