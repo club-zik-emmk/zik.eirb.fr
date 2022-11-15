@@ -1,6 +1,5 @@
 import {Request, Response} from "express";
 import {Reservation} from "../models";
-import {User} from "../models";
 import {error, success} from "../utils";
 
 const reservationController = {
