@@ -1,5 +1,6 @@
 import {Request, Response} from "express";
 import {Reservation} from "../models";
+import {ReservationUser} from "../models";
 import {error, success} from "../utils";
 
 const reservationController = {
@@ -22,8 +23,27 @@ function listAllReservations(req: Request, res: Response) {
 
 function getReservationById(req: Request, res: Response) {
     return Reservation.findByPk(req.params.id).then((reservation) => {
+        //get array of users in reservation and add it to reservation object
         if (reservation) {
-            return success(res, "Détails de la réservation", "RESERVATION/DETAILS", reservation);
+            ReservationUser.findAll({
+                where: {
+                    reservationId: reservation.id
+                }
+            }).then((resUsers) => {
+                // keep only the userId
+                let userIds = resUsers.map((resUser) => {
+                    return resUser.userId;
+                });
+                // create a new object with the reservation and the userIds
+                let resWithUsers = {
+                    reservation: reservation,
+                    userIds: userIds
+                };
+                return success(res, "Réservation", "RESERVATION/GET", resWithUsers);
+            }).catch((e) => {
+                console.log(e);
+                return error(res, "Erreur lors de la récupération des utilisateurs de la réservation!", "RESERVATION/USERS_GET_FAILED");
+            });
         } else {
             return error(res, "Réservation introuvable !", "RESERVATION/NOT_FOUND", 404);
         }
@@ -56,6 +76,7 @@ async function createOrUpdateReservation(req: Request, res: Response) {
         return error(res, "La date de début doit être avant la date de fin", "VALIDATION/START_DATE_BEFORE_END_DATE");
     }
 
+
     // Create local user object from request body
 
     const reservation = {
@@ -66,9 +87,21 @@ async function createOrUpdateReservation(req: Request, res: Response) {
         ownerId: req.session.user.id,
     };
 
+
+
     return Reservation.create(reservation)
-        .then((user) => {
-            return success(res, "Réservation créée avec succès !", "RESERVATION/CREATED", reservation);
+        .then((resa) => {
+            // if users is defined
+            if (req.body.users) {
+                // create reservationUsers per user
+                req.body.users.forEach((user) => {
+                    ReservationUser.create({
+                        reservationId: resa.id,
+                        userId: user.id
+                    });
+                });
+                return success(res, "Réservation créée avec succès !", "RESERVATION/CREATED", resa.id);
+            }
         }).catch((e) => {
             console.log(e);
             return error(res, "Erreur lors de la création de la réservation!", "RESERVATION/CREATE_FAILED");

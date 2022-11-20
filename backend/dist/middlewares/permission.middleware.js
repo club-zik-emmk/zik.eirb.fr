@@ -1,23 +1,68 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.can = exports.PERMISSIONS = void 0;
+exports.isMember = exports.isAdmin = exports.isConnected = void 0;
 const models_1 = require("../models");
-exports.PERMISSIONS = {
-    MANAGE_USERS: "manageUsers",
-};
-const can = (permission) => async (req, res, next) => {
-    const userId = "jchabrier";
-    const user = await models_1.User.findByPk(userId);
-    if (user) {
-        if (permission === exports.PERMISSIONS.MANAGE_USERS && !user.admin) {
-            return res.status(403).send("You are not allowed to manage users");
-        }
-        else {
-            next();
-        }
+const isConnected = () => async (req, res, next) => {
+    // @ts-ignore
+    if (!req.session.user) {
+        res.status(401).json({
+            success: false,
+            error: {
+                message: "User not authenticated",
+            },
+        });
+        return;
     }
-    else {
-        return res.status(404).send("User not found");
-    }
+    next();
 };
-exports.can = can;
+exports.isConnected = isConnected;
+const isAdmin = () => async (req, res, next) => {
+    // @ts-ignore
+    if (!req.session.user) {
+        res.status(401).json({
+            success: false,
+            error: {
+                message: "User not authenticated",
+            },
+        });
+        return;
+    }
+    // @ts-ignore
+    const user = await models_1.User.findById(req.session.user.id);
+    if (!user || !user.admin) {
+        res.status(403).json({
+            success: false,
+            error: {
+                message: "User is not an admin",
+            },
+        });
+        return;
+    }
+    next();
+};
+exports.isAdmin = isAdmin;
+const isMember = () => async (req, res, next) => {
+    // @ts-ignore
+    if (!req.session.user) {
+        res.status(401).json({
+            success: false,
+            error: {
+                message: "User not authenticated",
+            },
+        });
+        return;
+    }
+    // @ts-ignore
+    const user = await models_1.User.findById(req.session.user.id);
+    if (!user || !user.member) {
+        res.status(403).json({
+            success: false,
+            error: {
+                message: "User is not a member",
+            },
+        });
+        return;
+    }
+    next();
+};
+exports.isMember = isMember;
