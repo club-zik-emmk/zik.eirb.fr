@@ -1,5 +1,5 @@
 <template>
-  <div class="absolute left-0 w-12" :style="style"></div>
+  <div class="absolute left-0 w-12 disponibility" :style="style"></div>
 </template>
 
 <script>
@@ -12,53 +12,37 @@ export default {
     }
   },
   computed: {
-    eventAnchor() {
-      return this.$store.state.eventAnchor;
-    },
-    innerPadding() {
-      return this.$store.state.innerPadding;
-    },
     style() {
-      // If not set, find the anchor
-      if (!this.eventAnchor) {
-        this.$store.commit("setEventAnchor", document.querySelector(".event-anchor")?.getBoundingClientRect());
-      }
+      // Number of quarter hours between 08:00 and the start of the disponibility
+      const start = this.disponibility.openningTime.diff(this.disponibility.openningTime.clone().startOf("day").hour(8), "minutes") / 15;
+      // Number of quarter hours between the start and the end of the disponibility
+      const height = this.disponibility.closingTime.diff(this.disponibility.openningTime, "minutes") / 15;
+      // How many times the disponibility goes over a round hour
+      const roundHour = Math.floor(height / 4);
+      // How many times the difference between the parent height and the disponibility start goes over a round hour
+      const roundHourStart = Math.floor(start / 4);
 
-      if (this.innerPadding === -1) {
-        this.$store.dispatch("setInnerPadding", document.querySelector(`[anchor-value="08:00"]`)?.getBoundingClientRect().height / 2);
-      }
-
-      // Get opening and closing hour formatted as HH:mm (ex: 08:00) with padding
-      const openingHour = this.disponibility.openningTime.format("HH:mm");
-      const closingHour = this.disponibility.closingTime.format("HH:mm");
-
-      // Get the top and bottom position of the event
-      const openingHourAnchor = document.querySelector(`[anchor-value="${openingHour}"]`)?.getBoundingClientRect();
-      const closingHourAnchor = document.querySelector(`[anchor-value="${closingHour}"]`)?.getBoundingClientRect();
-
-      const openingHourMiddle = openingHourAnchor?.top ? openingHourAnchor.top + (openingHourAnchor.height / 2) : 0;
-      const closingHourMiddle = closingHourAnchor?.top ? closingHourAnchor.top + (closingHourAnchor.height / 2) : 0;
-
-      // Get the height of the event
-      const height = closingHourMiddle - openingHourMiddle;
-
-      // Calculate relative position to this.eventAnchor
-      const relativeTop = openingHourAnchor.top - this.eventAnchor.top + this.innerPadding;
-
-      // Return the style
       return {
-        top: relativeTop + "px",
-        height: height + "px",
-        backgroundColor: this.disponibility.allowNoise ? "#97c4a7" : "#e8d8ab",
-        borderBottom: "2px dashed rgb(0 0 0 / 10%)",
-        borderTop: "2px dashed rgb(0 0 0 / 10%)",
-        zIndex: this.disponibility.priority
-      }
+        '--start': start,
+        '--round-hour-start': roundHourStart,
+        '--height': height,
+        '--round-hour': roundHour,
+        '--allow-noise': this.disponibility.allowNoise ? 1 : 0,
+        '--background-color': this.disponibility.allowNoise ? "#97c4a7" : "#e8d8ab",
+        '--priority': this.disponibility.priority,
+      };
     }
   }
 }
 </script>
 
 <style scoped>
-
+.disponibility {
+  top: calc((var(--start) * 3rem) + ((var(--start) - var(--round-hour-start)) * 0.25rem) + ((var(--round-hour-start) + 1) * 1rem));
+  height: calc((var(--height) * 3rem) + ((var(--height) - var(--round-hour)) * 0.25rem) + ((var(--round-hour)) * 1rem));
+  background-color: var(--background-color);
+  border-bottom: 2px dashed rgb(0 0 0 / 10%);
+  border-top: 2px dashed rgb(0 0 0 / 10%);
+  z-index: var(--priority);
+}
 </style>
