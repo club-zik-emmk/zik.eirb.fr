@@ -11,8 +11,6 @@ const ls = new SecureLS({
 const store = createStore({
     state() {
         return {
-            eventAnchor: null,
-            innerPadding: -1,
             isWeekListOpen: false,
             currentDay: {
                 disponibilities: [],
@@ -28,12 +26,6 @@ const store = createStore({
         }
     },
     mutations: {
-        setEventAnchor(state, anchor) {
-            state.eventAnchor = anchor;
-        },
-        setInnerPadding(state, padding) {
-            state.innerPadding = padding;
-        },
         openWeekList(state) {
             state.isWeekListOpen = true;
         },
@@ -48,21 +40,11 @@ const store = createStore({
         }
     },
     actions: {
-        setEventAnchor({commit}, anchor) {
-            commit("setEventAnchor", anchor);
-        },
-        setInnerPadding({commit}, padding) {
-            commit("setInnerPadding", padding);
-        },
         openWeekList({commit}) {
             commit("openWeekList");
         },
         closeWeekList({commit}) {
             commit("closeWeekList");
-        },
-        resetPositions({commit}) {
-            commit("setEventAnchor", null);
-            commit("setInnerPadding", -1);
         },
         setCurrentDay({commit}, day) {
             commit("setCurrentDay", day);

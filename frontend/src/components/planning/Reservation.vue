@@ -26,12 +26,6 @@ export default {
     }
   },
   computed: {
-    eventAnchor() {
-      return this.$store.state.eventAnchor;
-    },
-    innerPadding() {
-      return this.$store.state.innerPadding;
-    },
     style() {
       // Number of quarter hours between 08:00 and the start of the disponibility
       const start = this.reservation.startDate.diff(this.reservation.startDate.clone().startOf("day").hour(8), "minutes") / 15;
@@ -61,6 +55,7 @@ export default {
   },
   methods: {
     padDate(date) {
+      // Set locale to french
       return date.format("HH:mm");
     },
     deleteReservation() {
@@ -70,7 +65,7 @@ export default {
             emitter.emit("refreshDay");
           })
           .catch((error) => {
-            console.log(error);
+            console.error(error);
           });
       }
     }

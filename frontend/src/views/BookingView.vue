@@ -104,7 +104,7 @@ export default {
       }).then(() => {
         this.$router.push("/planning");
       }).catch((error) => {
-        console.log(error);
+        console.error(error);
       });
     }
   },

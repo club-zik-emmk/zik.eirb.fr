@@ -4,7 +4,7 @@ import {getWeekNumber, dayIndexToDayName, monthIndexToMonthName} from "./utils";
 import moment, {Moment} from "moment";
 
 
-class PlanningLogicManager implements IPlanningLogic {
+class PlanningLogicManager {
     private currentWeek: Moment;
 
     private allDisponibilities: Disponibility[];
@@ -47,10 +47,10 @@ class PlanningLogicManager implements IPlanningLogic {
 
         this.allReservations = response.data.data.map((reservation: any) => {
             // Parse starting date but set the time to 00:00:00
-            const startDate = moment(new Date(reservation.startDate));
+            const startDate = moment(reservation.startDate);
 
             // Parse ending date but set the time to 23:59:59
-            const endDate = moment(new Date(reservation.endDate));
+            const endDate = moment(reservation.endDate);
 
             return {
                 ...reservation,
@@ -81,7 +81,8 @@ class PlanningLogicManager implements IPlanningLogic {
 
         // Only keep this week's reservations
         const filteredReservations = this.allReservations.filter((reservation) => {
-            return this.currentWeek.year() === reservation.startDate.year() && this.currentWeek.week() === reservation.startDate.week();
+            return this.currentWeek.year() === reservation.startDate.year()
+                && this.currentWeek.week() === reservation.startDate.week();
         });
 
         // Reduce in map of day index to reservations
@@ -117,8 +118,15 @@ class PlanningLogicManager implements IPlanningLogic {
     /**
      * Get the disponibilities and reservations for the next day
      */
-    getNextDay(): Day {
+    async getNextDay(): Promise<Day> {
+        const previousWeek = this.currentWeek.isoWeek();
+
         this.currentWeek.add(1, "days");
+
+        // If the week has changed, we need to refresh the disponibilities and reservations
+        if (previousWeek !== this.currentWeek.isoWeek()) {
+            await this.refreshWeek();
+        }
 
         return this.getCurrentDay();
     }
@@ -126,8 +134,15 @@ class PlanningLogicManager implements IPlanningLogic {
     /**
      * Get the disponibilities and reservations for the previous day
      */
-    getPreviousDay(): Day {
+    async getPreviousDay(): Promise<Day> {
+        const previousWeek = this.currentWeek.isoWeek();
+
         this.currentWeek.subtract(1, "days");
+
+        // If the week has changed, we need to refresh the disponibilities and reservations
+        if (previousWeek !== this.currentWeek.isoWeek()) {
+            await this.refreshWeek();
+        }
 
         return this.getCurrentDay();
     }
@@ -138,15 +153,9 @@ class PlanningLogicManager implements IPlanningLogic {
         await this.refreshWeek();
     }
 
-    getNextWeek(callback: (days: Day[]) => void): void {
-    }
-
-    getPreviousWeek(callback: (days: Day[]) => void): void {
-    }
-
     resetToToday(): void {
         // this.currentWeek = moment();
-        this.currentWeek = moment(new Date(2022, 7, 22, 12));
+        this.currentWeek = moment(new Date(2022, 7, 25, 12));
     }
 }
 

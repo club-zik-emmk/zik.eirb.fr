@@ -114,6 +114,7 @@ export default {
 
     this.planningManager.resetToToday();
     await this.planningManager.refreshWeek();
+
     this.$store.dispatch("setCurrentDay", await this.planningManager.getCurrentDay());
 
     this.isLoading = false;
@@ -136,11 +137,9 @@ export default {
   methods: {
     async handlePreviousDayButtonClick() {
       this.$store.dispatch("setCurrentDay", await this.planningManager.getPreviousDay());
-      this.$store.dispatch("resetPositions");
     },
     async handleNextDayButtonClick() {
       this.$store.dispatch("setCurrentDay", await this.planningManager.getNextDay());
-      this.$store.dispatch("resetPositions");
     },
     padDate(date) {
       return `${date.getHours()}`.padStart(2, '0') + ':' + `${date.getMinutes()}`.padStart(2, '0');
@@ -168,9 +167,6 @@ export default {
     isUserMember() {
       return this.$store.state.user.member;
     }
-  },
-  unmounted() {
-    this.$store.dispatch('resetPositions');
   }
 }
 </script>
