@@ -63,22 +63,18 @@
       <div class="w-28">
         <!-- Hour -->
         <div v-for="hour in 15" :key="hour">
-          <div class="text-sm mb-9 hour-anchor" :anchor-value="`${hour + 7}`.padStart(2, '0') + ':00'">{{
-              hour + 7
-            }}:00
+          <div class="h-[1rem] mb-[3rem] flex items-center">
+            <span class="text-sm">{{ hour + 7 }}:00</span>
           </div>
 
           <!-- Quarter bar -->
-          <div class="w-2 h-[2px] bg-gray-300 rounded-xl mb-9 hour-anchor"
-               :anchor-value="`${hour + 7}`.padStart(2, '0') + ':15'"></div>
+          <div class="w-2 h-[0.25rem] bg-gray-300 rounded-xl mb-[3rem]"></div>
 
           <!-- Half bar -->
-          <div class="w-5 h-[2px] bg-gray-300 rounded-xl mb-9 hour-anchor"
-               :anchor-value="`${hour + 7}`.padStart(2, '0') + ':30'"></div>
+          <div class="w-5 h-[0.25rem] bg-gray-300 rounded-xl mb-[3rem]"></div>
 
           <!-- Quarter bar -->
-          <div class="w-2 h-[2px] bg-gray-300 rounded-xl mb-9 hour-anchor"
-               :anchor-value="`${hour + 7}`.padStart(2, '0') + ':45'"></div>
+          <div class="w-2 h-[0.25rem] bg-gray-300 rounded-xl mb-[3rem]"></div>
         </div>
       </div>
 
@@ -118,6 +114,7 @@ export default {
 
     this.planningManager.resetToToday();
     await this.planningManager.refreshWeek();
+
     this.$store.dispatch("setCurrentDay", await this.planningManager.getCurrentDay());
 
     this.isLoading = false;
@@ -125,8 +122,6 @@ export default {
     emitter.on('refreshDay', async () => {
       await this.planningManager.refreshWeek();
       this.$store.dispatch("setCurrentDay", await this.planningManager.getCurrentDay());
-
-      this.refreshAnchors();
     });
 
     emitter.on("weekClick", async (week) => {
@@ -142,21 +137,15 @@ export default {
   methods: {
     async handlePreviousDayButtonClick() {
       this.$store.dispatch("setCurrentDay", await this.planningManager.getPreviousDay());
-      this.$store.dispatch("resetPositions");
     },
     async handleNextDayButtonClick() {
       this.$store.dispatch("setCurrentDay", await this.planningManager.getNextDay());
-      this.$store.dispatch("resetPositions");
     },
     padDate(date) {
       return `${date.getHours()}`.padStart(2, '0') + ':' + `${date.getMinutes()}`.padStart(2, '0');
     },
     openWeekList() {
       this.$store.dispatch("openWeekList");
-    },
-    refreshAnchors() {
-      this.$store.commit("setEventAnchor", document.querySelector(".event-anchor")?.getBoundingClientRect());
-      this.$store.dispatch("setInnerPadding", document.querySelector(`[anchor-value="08:00"]`)?.getBoundingClientRect().height / 2);
     }
   },
   computed: {
@@ -178,9 +167,6 @@ export default {
     isUserMember() {
       return this.$store.state.user.member;
     }
-  },
-  unmounted() {
-    this.$store.dispatch('resetPositions');
   }
 }
 </script>
