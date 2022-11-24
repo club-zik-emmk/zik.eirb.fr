@@ -1,7 +1,7 @@
-import {Request, Response} from "express";
-import {Reservation} from "../models";
-import {ReservationUser} from "../models";
-import {error, success} from "../utils";
+import { Request, Response } from "express";
+import { Reservation } from "../models";
+import { ReservationUser } from "../models";
+import { error, success } from "../utils";
 
 const reservationController = {
     listAllReservations,
@@ -11,13 +11,32 @@ const reservationController = {
 };
 
 
-function listAllReservations(req: Request, res: Response) {
-    return Reservation.findAll().then((reservations) => {
-        return success(res, "Liste des réservations", "RESERVATION/LIST", reservations);
-    }).catch((e) => {
-        console.log(e);
-        return error(res, "Erreur lors de la récupération de la liste des réservations", "RESERVATION/LIST_FAILED");
-    });
+async function listAllReservations(req: Request, res: Response) {
+    let reservationsWithUsers: any[] = [];
+    const reservations = await Reservation.findAll();
+    // for each reservation, get the users associated and add them to the reservation object
+    for (let reservation of reservations) {
+        const reservationsUsers = await ReservationUser.findAll({
+            where: {
+                reservationId: reservation.id
+            }
+        });
+
+        let users: any[] = [];
+
+        reservationsUsers.forEach((reservationUser) => users.push(reservationUser.userId));
+
+        reservationsWithUsers.push({
+            id: reservation.id,
+            title: reservation.title,
+            startDate: reservation.startDate,
+            endDate: reservation.endDate,
+            ownerId: reservation.ownerId,
+            users: users
+        });
+    }
+
+    success(res, "Réservations récupérées avec succès !", "RESERVATION/RETRIEVED", reservationsWithUsers);
 }
 
 
@@ -36,8 +55,12 @@ function getReservationById(req: Request, res: Response) {
                 });
                 // create a new object with the reservation and the userIds
                 let resWithUsers = {
-                    reservation: reservation,
-                    userIds: userIds
+                    id: reservation.id,
+                    title: reservation.title,
+                    startDate: reservation.startDate,
+                    endDate: reservation.endDate,
+                    ownerId: reservation.ownerId,
+                    users: userIds
                 };
                 return success(res, "Réservation", "RESERVATION/GET", resWithUsers);
             }).catch((e) => {
