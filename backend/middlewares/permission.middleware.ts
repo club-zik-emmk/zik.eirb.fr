@@ -1,15 +1,8 @@
 import { Request, Response } from "express";
 import { User } from "../models";
 
-
-interface AuthenticatedRequest extends Response {
-    session: {
-        user: User;
-    };
-}
-
 export const isConnected = () => async (req: Request, res: Response, next: () => void) => {
-    // @ts-ignore
+
     if (!req.session.user) {
         res.status(401).json({
             success: false,
@@ -19,11 +12,11 @@ export const isConnected = () => async (req: Request, res: Response, next: () =>
         });
         return;
     }
+
     next();
 };
     
 export const isAdmin = () => async (req: Request, res: Response, next: () => void) => {
-    // @ts-ignore
     if (!req.session.user) {
         res.status(401).json({
             success: false,
@@ -33,7 +26,7 @@ export const isAdmin = () => async (req: Request, res: Response, next: () => voi
         });
         return;
     }
-    // @ts-ignore
+
     const user = await User.findByPk(req.session.user.id);
     if (!user || !user.admin) {
         res.status(403).json({
@@ -44,11 +37,12 @@ export const isAdmin = () => async (req: Request, res: Response, next: () => voi
         });
         return;
     }
+
     next();
 };
 
 export const isMember = () => async (req: Request, res: Response, next: () => void) => {
-    // @ts-ignore
+    // Session type redefines the session object to include the user property
     if (!req.session.user) {
         res.status(401).json({
             success: false,
@@ -58,7 +52,7 @@ export const isMember = () => async (req: Request, res: Response, next: () => vo
         });
         return;
     }
-    // @ts-ignore
+
     const user = await User.findByPk(req.session.user.id);
     if (!user || !user.member) {
         res.status(403).json({
@@ -69,5 +63,6 @@ export const isMember = () => async (req: Request, res: Response, next: () => vo
         });
         return;
     }
+
     next();
 };

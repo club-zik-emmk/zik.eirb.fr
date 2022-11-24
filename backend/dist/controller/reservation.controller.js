@@ -7,9 +7,7 @@ const reservationController = {
     listAllReservations,
     getReservationById,
     createOrUpdateReservation,
-    deleteReservationById,
-    addUserToReservation,
-    removeUserFromReservation
+    deleteReservationById
 };
 function listAllReservations(req, res) {
     return models_1.Reservation.findAll().then((reservations) => {
@@ -21,8 +19,27 @@ function listAllReservations(req, res) {
 }
 function getReservationById(req, res) {
     return models_1.Reservation.findByPk(req.params.id).then((reservation) => {
+        //get array of users in reservation and add it to reservation object
         if (reservation) {
-            return (0, utils_1.success)(res, "Détails de la réservation", "RESERVATION/DETAILS", reservation);
+            models_2.ReservationUser.findAll({
+                where: {
+                    reservationId: reservation.id
+                }
+            }).then((resUsers) => {
+                // keep only the userId
+                let userIds = resUsers.map((resUser) => {
+                    return resUser.userId;
+                });
+                // create a new object with the reservation and the userIds
+                let resWithUsers = {
+                    reservation: reservation,
+                    userIds: userIds
+                };
+                return (0, utils_1.success)(res, "Réservation", "RESERVATION/GET", resWithUsers);
+            }).catch((e) => {
+                console.log(e);
+                return (0, utils_1.error)(res, "Erreur lors de la récupération des utilisateurs de la réservation!", "RESERVATION/USERS_GET_FAILED");
+            });
         }
         else {
             return (0, utils_1.error)(res, "Réservation introuvable !", "RESERVATION/NOT_FOUND", 404);
@@ -58,77 +75,21 @@ async function createOrUpdateReservation(req, res) {
         ownerId: req.session.user.id,
     };
     return models_1.Reservation.create(reservation)
-        .then((user) => {
-        return (0, utils_1.success)(res, "Réservation créée avec succès !", "RESERVATION/CREATED", reservation);
+        .then((resa) => {
+        // if users is defined
+        if (req.body.users) {
+            // create reservationUsers per user
+            req.body.users.forEach((user) => {
+                models_2.ReservationUser.create({
+                    reservationId: resa.id,
+                    userId: user.id
+                });
+            });
+            return (0, utils_1.success)(res, "Réservation créée avec succès !", "RESERVATION/CREATED", resa.id);
+        }
     }).catch((e) => {
         console.log(e);
         return (0, utils_1.error)(res, "Erreur lors de la création de la réservation!", "RESERVATION/CREATE_FAILED");
-    });
-}
-function getUserByReservation(req, res) {
-    return models_1.Reservation.findByPk(req.params.id).then((reservation) => {
-        if (reservation) {
-            return models_2.ReservationUser.findAll({
-                where: {
-                    reservationId: reservation.id
-                }
-            }).then((reservationUsers) => {
-                return (0, utils_1.success)(res, "Utilisateurs de la réservation", "RESERVATION/USERS", reservationUsers);
-            }).catch((e) => {
-                console.log(e);
-                return (0, utils_1.error)(res, "Erreur lors de la récupération des utilisateurs de la réservation!", "RESERVATION/USERS_GET_FAILED");
-            });
-        }
-        else {
-            return (0, utils_1.error)(res, "Réservation introuvable !", "RESERVATION/NOT_FOUND", 404);
-        }
-    }).catch((e) => {
-        console.log(e);
-        return (0, utils_1.error)(res, "Erreur lors de la récupération de la réservation", "RESERVATION/GET_FAILED");
-    });
-}
-function addUserToReservation(req, res) {
-    return models_1.Reservation.findByPk(req.params.id).then((reservation) => {
-        if (reservation) {
-            return models_2.ReservationUser.create({
-                reservationId: reservation.id,
-                userId: req.body.userId
-            }).then((reservationUser) => {
-                return (0, utils_1.success)(res, "Utilisateur ajouté à la réservation avec succès !", "RESERVATION/USER_ADDED", reservationUser);
-            }).catch((e) => {
-                console.log(e);
-                return (0, utils_1.error)(res, "Erreur lors de l'ajout de l'utilisateur à la réservation!", "RESERVATION/USER_ADD_FAILED");
-            });
-        }
-        else {
-            return (0, utils_1.error)(res, "Réservation introuvable !", "RESERVATION/NOT_FOUND", 404);
-        }
-    }).catch((e) => {
-        console.log(e);
-        return (0, utils_1.error)(res, "Erreur lors de la récupération de la réservation", "RESERVATION/GET_FAILED");
-    });
-}
-function removeUserFromReservation(req, res) {
-    return models_1.Reservation.findByPk(req.params.id).then((reservation) => {
-        if (reservation) {
-            return models_2.ReservationUser.destroy({
-                where: {
-                    reservationId: reservation.id,
-                    userId: req.body.userId
-                }
-            }).then((reservationUser) => {
-                return (0, utils_1.success)(res, "Utilisateur retiré de la réservation avec succès !", "RESERVATION/USER_REMOVED", reservationUser);
-            }).catch((e) => {
-                console.log(e);
-                return (0, utils_1.error)(res, "Erreur lors du retrait de l'utilisateur de la réservation!", "RESERVATION/USER_REMOVE_FAILED");
-            });
-        }
-        else {
-            return (0, utils_1.error)(res, "Réservation introuvable !", "RESERVATION/NOT_FOUND", 404);
-        }
-    }).catch((e) => {
-        console.log(e);
-        return (0, utils_1.error)(res, "Erreur lors de la récupération de la réservation", "RESERVATION/GET_FAILED");
     });
 }
 function deleteReservationById(req, res) {

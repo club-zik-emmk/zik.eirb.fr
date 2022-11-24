@@ -75,10 +75,15 @@ async function authenticate(request, response) {
     });
     // If the user hasn't been found
     if (!user) {
+        // Create the user
         user = await models_1.User.create({
             id: username,
             admin: false,
-            member: false
+            member: false,
+            ownedReservations: [],
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            reservations: []
         });
     }
     // Store the user in the session

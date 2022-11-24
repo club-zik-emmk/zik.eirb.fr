@@ -17,7 +17,6 @@ const isConnected = () => async (req, res, next) => {
 };
 exports.isConnected = isConnected;
 const isAdmin = () => async (req, res, next) => {
-    // @ts-ignore
     if (!req.session.user) {
         res.status(401).json({
             success: false,
@@ -27,8 +26,7 @@ const isAdmin = () => async (req, res, next) => {
         });
         return;
     }
-    // @ts-ignore
-    const user = await models_1.User.findById(req.session.user.id);
+    const user = await models_1.User.findByPk(req.session.user.id);
     if (!user || !user.admin) {
         res.status(403).json({
             success: false,
@@ -42,7 +40,8 @@ const isAdmin = () => async (req, res, next) => {
 };
 exports.isAdmin = isAdmin;
 const isMember = () => async (req, res, next) => {
-    // @ts-ignore
+    // Session type redefines the session object to include the user property
+    const session = req.session;
     if (!req.session.user) {
         res.status(401).json({
             success: false,
@@ -52,8 +51,7 @@ const isMember = () => async (req, res, next) => {
         });
         return;
     }
-    // @ts-ignore
-    const user = await models_1.User.findById(req.session.user.id);
+    const user = await models_1.User.findByPk(req.session.user.id);
     if (!user || !user.member) {
         res.status(403).json({
             success: false,

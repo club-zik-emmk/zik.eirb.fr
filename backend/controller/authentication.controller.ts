@@ -87,6 +87,7 @@ async function authenticate(request: Request, response: Response): Promise<void>
 
     // If the user hasn't been found
     if (!user) {
+        // Create the user
         user = await User.create({
             id: username,
             admin: false,
