@@ -48,6 +48,7 @@ export default {
     return {
       adminLinks: links.admin,
       memberLinks: links.member,
+      cotisationLink: links.cotisation
     }
   },
   computed: {
@@ -60,9 +61,6 @@ export default {
     isUserMember() {
       return this.$store.state.user.member;
     },
-    cotisationLink() {
-      return import.meta.env.VITE_ZIK_COTISATION_LINK;
-    }
   },
   methods: {
     logout() {

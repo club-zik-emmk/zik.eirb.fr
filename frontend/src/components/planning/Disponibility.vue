@@ -1,5 +1,5 @@
 <template>
-  <div class="absolute left-0 w-12 disponibility" :style="style"></div>
+  <div class="absolute left-0 w-[6vw] lg:w-12 disponibility" :style="style"></div>
 </template>
 
 <script>

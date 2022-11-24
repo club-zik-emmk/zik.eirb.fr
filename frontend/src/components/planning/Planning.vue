@@ -1,6 +1,6 @@
 <template>
   <!-- Right part and day display -->
-  <div id="day" class="w-full px-3 lg:px-16 lg:py-6 relative " :class="isLoading ? 'h-[92vh] overflow-hidden' : 'max-h-full overflow-y-auto'">
+  <div id="day" class="w-full lg:px-16 lg:py-6 relative" :class="dayClasses">
     <div class="w-full h-full" v-show="isLoading">
       <div class="w-full h-full absolute top-0 left-0 bg-black opacity-50"></div>
       <div class="w-full h-full flex justify-center items-center absolute top-0 left-0">
@@ -13,17 +13,21 @@
 
       <!-- Actions -->
       <div class="mb-12 flex flex-row w-full flex flex-row justify-between lg:justify-end pt-5 lg:pt-0">
-        <div class="bg-red-900 rounded-lg rounded-lg w-32 h-12 flex flex-row items-center justify-evenly px-3" v-show="this.isMobile" @click="openWeekList">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+        <div class="bg-red-900 rounded-lg rounded-lg w-32 h-12 flex flex-row items-center justify-evenly px-3"
+             v-show="this.isMobile" @click="openWeekList">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+               stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/>
           </svg>
 
           Semaines
         </div>
 
-        <router-link to="/book" class="bg-green-400 rounded-lg w-32 h-12 flex flex-row items-center justify-evenly px-3" v-if="isUserMember">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+        <router-link to="/book" class="bg-green-400 rounded-lg w-32 h-12 flex flex-row items-center justify-evenly px-3"
+                     v-if="isUserMember">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+               stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
           </svg>
 
           Réserver
@@ -58,7 +62,7 @@
       </div>
     </div>
 
-    <div class="w-full h-fit mt-8 lg:mt-16 relative">
+    <div class="w-full h-fit mt-8 lg:mt-16 flex flex-row flex-nowrap" :class="(isMobile && (selectedReservation !== null)) ? '' : 'relative'">
       <!-- Left bar with hours -->
       <div class="w-28">
         <!-- Hour -->
@@ -79,14 +83,28 @@
       </div>
 
       <!-- Right part with events -->
-      <div class="absolute top-0 left-14 lg:left-28 event-anchor">
+      <div class="absolute top-0 left-14 lg:left-28">
         <!-- Disponibilities -->
-        <Disponibility v-for="disponibility in currentDay.disponibilities" :key="disponibility.id"
-                       :disponibility="disponibility"/>
+        <Disponibility
+            v-for="disponibility in currentDay.disponibilities"
+            :key="disponibility.id"
+            :disponibility="disponibility"
+        />
 
         <!-- Reservations -->
-        <Reservation v-for="reservation in currentDay.reservations" :key="reservation.id" :reservation="reservation"/>
+        <Reservation
+            v-for="reservation in currentDay.reservations"
+            :key="reservation.id"
+            :reservation="reservation"
+            @click="handleReservationSelection(reservation)"
+        />
       </div>
+
+      <!-- Selected reservation -->
+      <SelectedReservation
+        v-if="selectedReservation"
+        :reservation="selectedReservation"
+        />
     </div>
   </div>
 </template>
@@ -96,17 +114,20 @@ import planningLogicManager from "../../PlanningLogicManager";
 import {emitter} from "../../emitter";
 import Reservation from "./Reservation.vue";
 import Disponibility from "./Disponibility.vue";
+import SelectedReservation from "./SelectedReservation.vue";
 
 export default {
   name: "Planning",
   components: {
+    SelectedReservation,
     Disponibility,
     Reservation,
   },
   data() {
     return {
       planningManager: planningLogicManager,
-      isLoading: true
+      isLoading: true,
+      selectedReservation: null,
     }
   },
   async created() {
@@ -124,6 +145,7 @@ export default {
       this.$store.dispatch("setCurrentDay", await this.planningManager.getCurrentDay());
     });
 
+    // Handle the week selection of the left bar
     emitter.on("weekClick", async (week) => {
       this.isLoading = true; // Display spinner
 
@@ -132,6 +154,11 @@ export default {
       this.$store.dispatch("setCurrentDay", await this.planningManager.getCurrentDay());
 
       this.isLoading = false; // Hide spinner
+    });
+
+    // Close selected reservation when on mobile
+    emitter.on("closeSelectedReservation", () => {
+      this.selectedReservation = null;
     });
   },
   methods: {
@@ -146,9 +173,18 @@ export default {
     },
     openWeekList() {
       this.$store.dispatch("openWeekList");
-    }
+    },
+    handleReservationSelection(reservation) {
+      this.selectedReservation = reservation;
+    },
   },
   computed: {
+    dayClasses() {
+      return {
+        'h-[92vh] overflow-hidden': this.isLoading || (this.isMobile && (this.selectedReservation !== null)),
+        'max-h-full overflow-y-auto px-3': !this.isLoading && (!this.isMobile || this.selectedReservation === null),
+      }
+    },
     currentDayName() {
       return this.currentDay.dayName.split(" ")[0];
     },

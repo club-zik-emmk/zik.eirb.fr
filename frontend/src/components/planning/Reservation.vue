@@ -1,9 +1,8 @@
 <template>
   <div
-      class="flex flex-col justify-center items-center absolute left-16 lg:left-24 w-[70vw] lg:w-96 flex-wrap reservation bg-slate-500"
+      class="flex flex-col justify-center items-center absolute left-[10vw] lg:left-24 w-[65vw] lg:w-96 flex-wrap reservation bg-slate-500"
       :style="this.style"
       :class="reservationClass"
-      @click="deleteReservation"
   >
     <div class="font-bold text-2xl">{{ reservation.title }}</div>
     <div class="flex flex-col justify-center items-center">
