@@ -94,7 +94,7 @@ async function createOrUpdateReservation(req: Request, res: Response) {
             // if users is defined
             if (req.body.users) {
                 // create reservationUsers per user
-                req.body.users.forEach((user) => {
+                req.body.users.forEach((user: any) => {
                     ReservationUser.create({
                         reservationId: resa.id,
                         userId: user.id

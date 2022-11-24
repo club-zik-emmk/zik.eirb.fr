@@ -23,7 +23,7 @@ export const isConnected = () => async (req: Request, res: Response, next: () =>
 };
     
 export const isAdmin = () => async (req: Request, res: Response, next: () => void) => {
-
+    // @ts-ignore
     if (!req.session.user) {
         res.status(401).json({
             success: false,
@@ -33,6 +33,7 @@ export const isAdmin = () => async (req: Request, res: Response, next: () => voi
         });
         return;
     }
+    // @ts-ignore
     const user = await User.findByPk(req.session.user.id);
     if (!user || !user.admin) {
         res.status(403).json({
@@ -47,6 +48,7 @@ export const isAdmin = () => async (req: Request, res: Response, next: () => voi
 };
 
 export const isMember = () => async (req: Request, res: Response, next: () => void) => {
+    // @ts-ignore
     if (!req.session.user) {
         res.status(401).json({
             success: false,
@@ -56,6 +58,7 @@ export const isMember = () => async (req: Request, res: Response, next: () => vo
         });
         return;
     }
+    // @ts-ignore
     const user = await User.findByPk(req.session.user.id);
     if (!user || !user.member) {
         res.status(403).json({
