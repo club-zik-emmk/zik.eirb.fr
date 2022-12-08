@@ -24,21 +24,39 @@ const routes: Route[] = [
         path: "/planning",
         name: "Planning",
         component: () => import("@/views/PlanningView.vue"),
+        meta: {
+            requiresAuth: true,
+        }
     },
     {
         path: "/book",
         name: "Réserver",
-        component: () => import("@/views/BookingView.vue")
+        component: () => import("@/views/BookingView.vue"),
+        meta: {
+            requiresAuth: true,
+        }
     },
     {
         path: "/auth",
         name: "Authentification",
-        component: () => import("@/views/AuthView.vue")
+        component: () => import("@/views/AuthView.vue"),
+        meta: {
+            requiresUnauthenticated: true
+        }
     },
     {
         path: "/admin/users",
         name: "Gestion des utilisateurs",
         component: () => import("@/views/admin/UserManagementView.vue"),
+        meta: {
+            requiresAuth: true,
+            requiresAdmin: true
+        }
+    },
+    {
+        path: "/admin/reservations-overview",
+        name: "Supervision des réservations",
+        component: () => import("@/views/admin/ReservationOverviewView.vue"),
         meta: {
             requiresAuth: true,
             requiresAdmin: true
@@ -71,6 +89,8 @@ router.beforeEach((to, from, next) => {
     if (to.meta?.requiresAuth && store.state.user.id === "") {
         next({name: "Authentification"});
     } else if (to.meta?.requiresAdmin && !store.state.user?.admin) {
+        next({name: "Home"});
+    } else if (to.meta?.requiresUnauthenticated && store.state.user.id !== "") {
         next({name: "Home"});
     } else {
         next();
