@@ -157,6 +157,14 @@ class PlanningLogicManager {
         // this.currentWeek = moment();
         this.currentWeek = moment(new Date(2022, 7, 25, 12));
     }
+
+    getReservations(): Reservation[] {
+        return this.allReservations;
+    }
+
+    getCurrentWeek(): Moment {
+        return this.currentWeek;
+    }
 }
 
 const planningLogicManager = new PlanningLogicManager();

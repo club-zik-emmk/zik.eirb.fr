@@ -100,36 +100,28 @@ async function createOrUpdateReservation(req: Request, res: Response) {
         return error(res, "La date de début doit être avant la date de fin", "VALIDATION/START_DATE_BEFORE_END_DATE");
     }
 
-
-    // Create local user object from request body
-
-    const reservation = {
-        title: req.body.title,
-        startDate: req.body.startDate,
-        endDate: req.body.endDate,
-        // @ts-ignore
-        ownerId: req.session.user.id,
-    };
-
-
-
-    return Reservation.create(reservation)
-        .then((resa) => {
-            // if users is defined
-            if (req.body.users) {
-                // create reservationUsers per user
-                req.body.users.forEach((user: any) => {
-                    ReservationUser.create({
-                        reservationId: resa.id,
-                        userId: user.id
-                    });
-                });
-                return success(res, "Réservation créée avec succès !", "RESERVATION/CREATED", resa.id);
-            }
-        }).catch((e) => {
-            console.log(e);
-            return error(res, "Erreur lors de la création de la réservation!", "RESERVATION/CREATE_FAILED");
+    try {
+        const insertedReservation = await Reservation.create({
+            title: req.body.title,
+            startDate: req.body.startDate,
+            endDate: req.body.endDate,
+            ownerId: req.session.user.id,
         });
+
+        if (req.body.users) {
+            for (let userId of req.body.users) {
+                await ReservationUser.create({
+                    reservationId: insertedReservation.id,
+                    userId: userId
+                });
+            }
+        }
+
+        return success(res, "Réservation créée avec succès !", "RESERVATION/CREATED", insertedReservation.id);
+    } catch (e) {
+        console.error(e);
+        return error(res, "Erreur lors de la création de la réservation!", "RESERVATION/CREATE_FAILED");
+    }
 }
 
 // create admin reservation

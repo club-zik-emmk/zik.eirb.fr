@@ -44,6 +44,20 @@
         </div>
       </div>
 
+      <!-- User list and search query -->
+      <div class="w-96 h-96 bg-red-900 rounded-lg overflow-hidden my-10">
+        <input type="text" class="w-full h-[10%] text-black px-5" v-model="searchQuery" @input="handleSearch"/>
+
+        <div class="flex flex-col overflow-y-auto shrink-0 h-[90%]">
+          <div v-for="user in users"
+               class="px-2 py-1 border-b-[1px] border-solid border-black last:border-b-0 hover:cursor-pointer"
+               :class="selectedUsers.includes(user) ? 'bg-blue-900 text-white' : ''"
+               @click="handleUserClick(user)">
+            {{ user }}
+          </div>
+        </div>
+      </div>
+
       <div class="w-full flex justify-center">
         <div class="w-full py-4 flex justify-center rounded-lg duration-300"
              :class="{
@@ -76,13 +90,19 @@ export default {
         hours: new Date(0, 0, 0, 8).getHours(),
         minutes: new Date(0, 0, 0, 0, 15).getMinutes(),
       },
-      title: ""
+      title: "",
+      searchQuery: "",
+      users: [],
+      usersBackup: [],
+      selectedUsers: []
     }
   },
   created() {
     if (!this.$store.dispatch("isCurrentDaySet")) {
       this.$router.push("/planning");
     }
+
+    this.fetchUsers();
   },
   methods: {
     onBookingButtonClick() {
@@ -101,10 +121,36 @@ export default {
         startDate: formattedStartTime,
         endDate: formattedEndTime,
         ownerId: this.$store.state.user.id,
+        users: this.selectedUsers
       }).then(() => {
         this.$router.push("/planning");
       }).catch((error) => {
         console.error(error);
+      });
+    },
+    handleSearch() {
+      if (this.searchQuery.length === 0) {
+        this.users = this.usersBackup;
+        return;
+      }
+
+      this.users = this.usersBackup.filter((user) => {
+        return user.toLowerCase().includes(this.searchQuery.toLowerCase());
+      });
+    },
+    handleUserClick(user) {
+      if (this.selectedUsers.includes(user)) {
+        this.selectedUsers = this.selectedUsers.filter((selectedUser) => {
+          return selectedUser !== user;
+        });
+      } else {
+        this.selectedUsers.push(user);
+      }
+    },
+    fetchUsers() {
+      axiosInstance.get("/api/v1/users").then(response => {
+        this.users = response.data.data.map(u => u.id);
+        this.usersBackup = response.data.data.map(u => u.id);
       });
     }
   },

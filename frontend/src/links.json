@@ -3,6 +3,10 @@
     {
       "title": "Gestion des utilisateurs",
       "path": "/admin/users"
+    },
+    {
+      "title": "Supervision des réservations",
+      "path": "/admin/reservations-overview"
     }
   ],
   "member": [

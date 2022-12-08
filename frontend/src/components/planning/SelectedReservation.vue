@@ -22,6 +22,8 @@
       }}</span>
     <span>Réservé par {{ reservation.ownerId }}</span>
 
+    {{reservation}}
+
     <span
         v-for="user in reservation.users"
         :key="user"

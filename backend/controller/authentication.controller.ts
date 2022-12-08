@@ -134,7 +134,6 @@ async function me(request: Request, response: Response) {
  */
 async function logout(request: Request, response: Response): Promise<void> {
     // The user cannot log out if he is not logged in
-    // @ts-ignore
     if (!request.session.user) {
         response.status(401)
             .json({

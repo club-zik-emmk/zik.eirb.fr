@@ -175,6 +175,7 @@ export default {
       this.$store.dispatch("openWeekList");
     },
     handleReservationSelection(reservation) {
+      console.log(reservation);
       this.selectedReservation = reservation;
     },
   },
