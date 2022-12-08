@@ -10,6 +10,7 @@ router.get("/", reservationController.listAllReservations);
 router.get("/:id", reservationController.getReservationById);
 
 router.post("/", isConnected(), isMember(), reservationController.createOrUpdateReservation);
+router.post("/admin", isConnected(), isAdmin(), reservationController.createAdminReservation);
 router.delete("/:id", isConnected(), isMember(), reservationController.deleteReservationById);
 
 export default router;
