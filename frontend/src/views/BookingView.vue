@@ -15,7 +15,7 @@
 
         <div class="w-full flex flex-col items-center justify-center my-7">
           <div class="uppercase font-bold text-4xl">Réserver</div>
-          <div class="text-xl">{{this.currentDay.dayName}}</div>
+          <div class="text-xl">{{ this.currentDay.dayName }}</div>
         </div>
 
         <div class="flex flex-col mb-7">
@@ -42,10 +42,19 @@
             <input type="text" v-model="title" required class="h-10 rounded-md text-black px-3 w-full">
           </div>
         </div>
+
+        <div class="w-full mt-5" v-if="isUserAdmin">
+          <input type="checkbox" class="mr-5" v-model="isAdminReservation">
+          <span>Réservation administrateur </span>
+        </div>
       </div>
 
+
       <!-- User list and search query -->
-      <div class="w-96 h-96 bg-red-900 rounded-lg overflow-hidden my-10">
+      <div
+          class="w-96 h-96 bg-red-900 rounded-lg overflow-hidden my-10"
+          v-if="!isAdminReservation"
+      >
         <input type="text" class="w-full h-[10%] text-black px-5" v-model="searchQuery" @input="handleSearch"/>
 
         <div class="flex flex-col overflow-y-auto shrink-0 h-[90%]">
@@ -58,6 +67,7 @@
         </div>
       </div>
 
+
       <div class="w-full flex justify-center">
         <div class="w-full py-4 flex justify-center rounded-lg duration-300"
              :class="{
@@ -66,7 +76,7 @@
           'hover:cursor-pointer': this.isReservationValid,
           'hover:bg-green-800': this.isReservationValid,
         }"
-        @click="onBookingButtonClick">
+             @click="onBookingButtonClick">
           <span>Réserver</span>
         </div>
       </div>
@@ -94,7 +104,8 @@ export default {
       searchQuery: "",
       users: [],
       usersBackup: [],
-      selectedUsers: []
+      selectedUsers: [],
+      isAdminReservation: false,
     }
   },
   created() {
@@ -116,17 +127,27 @@ export default {
       const formattedStartTime = `${day} ${this.startTime.hours.toString().padStart(2, "0")}:${this.startTime.minutes.toString().padStart(2, "0")}:00`;
       const formattedEndTime = `${day} ${this.endTime.hours.toString().padStart(2, "0")}:${this.endTime.minutes.toString().padStart(2, "0")}:00`;
 
-      axiosInstance.post("/api/v1/reservations", {
-        title: this.title,
-        startDate: formattedStartTime,
-        endDate: formattedEndTime,
-        ownerId: this.$store.state.user.id,
-        users: this.selectedUsers
-      }).then(() => {
-        this.$router.push("/planning");
-      }).catch((error) => {
-        console.error(error);
-      });
+      if (this.isAdminReservation) {
+        axiosInstance.post("/api/v1/reservations/admin", {
+          title: this.title,
+          startDate: formattedStartTime,
+          endDate: formattedEndTime,
+          ownerId: "ADMIN",
+          users: []
+        }).then(() => {
+          this.$router.push("/planning");
+        }).catch(console.error);
+      } else {
+        axiosInstance.post("/api/v1/reservations", {
+          title: this.title,
+          startDate: formattedStartTime,
+          endDate: formattedEndTime,
+          ownerId: this.$store.state.user.id,
+          users: this.selectedUsers
+        }).then(() => {
+          this.$router.push("/planning");
+        }).catch(console.error);
+      }
     },
     handleSearch() {
       if (this.searchQuery.length === 0) {
@@ -199,13 +220,17 @@ export default {
         const endDate = moment(reservation.endDate);
 
         return (reservationStartDate.isBetween(startDate, endDate) || reservationStartDate.isSameOrBefore(startDate))
-            && (reservationEndDate.isBetween(startDate, endDate) || reservationEndDate.isSameOrAfter(endDate));
+            || (reservationEndDate.isBetween(startDate, endDate) || reservationEndDate.isSameOrAfter(endDate));
       });
 
       // Check that the span of the reservation is less or equal to 3 hours
       const isSpanValid = reservationEndDate.diff(reservationStartDate, "hours") <= 3;
 
-      return isDuringDisponibility && !isDuringReservation && (isSpanValid || this.isUserAdmin);
+      return (
+          isDuringDisponibility
+          && !isDuringReservation
+          && (isSpanValid || this.isUserAdmin)
+      ) || this.isAdminReservation;
     },
     areTimesValid() {
       // Create the Moment objects
