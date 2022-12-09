@@ -2,13 +2,20 @@ import {Day, Disponibility, Reservation} from "./types";
 import axiosInstance from "./axiosInstance";
 import {dayIndexToDayName, monthIndexToMonthName} from "./utils";
 import moment, {Moment} from "moment";
+import store from "./store";
 
 
-class PlanningLogicManager {
+class ExperimentalPlanningLogicManager {
     private currentWeek: Moment;
 
     private allDisponibilities: Disponibility[];
     private allReservations: Reservation[];
+
+    // Index 0 of window is the week before the current week
+    // Index 1 of window is the current week
+    // Index 2 of window is the week after the current week
+    private reservationWindow: Array<{ [key: number]: Reservation[] }> = new Array(3);
+    private disponibilitiesWindow: Array<{ [key: number]: Disponibility[] }> = new Array(3);
 
     private weekDisponibilities: { [key: number]: Disponibility[] } = {};
     private weekReservations: { [key: number]: Reservation[] } = {};
@@ -60,41 +67,60 @@ class PlanningLogicManager {
         });
     }
 
-    async refreshWeek() {
-        await this.refreshDisponibilities();
+    async refreshWeek(weekIndex = 1) {
+        // Cache refresh
+        if (
+            store.state.lastCacheRefresh === -1
+            || moment().diff(store.state.lastCacheRefresh, "minutes") > 5
+        ) {
+            await this.refreshDisponibilities();
+            await this.refreshReservations();
+
+            store.commit("setLastCacheRefresh", moment());
+
+            for (let weekIndex of [1, 2, 0]) {
+                await this.refreshWeek(weekIndex);
+            }
+
+            return;
+        }
+
+        const weekClone = this.currentWeek.clone();
+
+        switch (weekIndex) {
+            case 0:
+                weekClone.subtract(1, "weeks");
+                break;
+            case 2:
+                weekClone.add(1, "weeks");
+                break;
+        }
 
         // Only keep the disponibilities that are in the current week
-        const filteredDisponibilities = this.allDisponibilities.filter((disponibility) => {
-            return this.currentWeek.isBetween(disponibility.startDate, disponibility.endDate);
-        });
-
-        // Reduce in map of day index to disponibilities
-        this.weekDisponibilities = filteredDisponibilities.reduce((acc, disponibility) => {
-            if (!acc[disponibility.day]) {
-                acc[disponibility.day] = [];
-            }
-            acc[disponibility.day].push(disponibility);
-            return acc;
-        }, {});
-
-        await this.refreshReservations();
+        this.disponibilitiesWindow[weekIndex] = this.allDisponibilities
+            .filter((disponibility) => {
+                return weekClone.year() === disponibility.startDate.year()
+                    && weekClone.isoWeek() === disponibility.startDate.isoWeek();
+            }).reduce((acc, disponibility) => {
+                if (!acc[disponibility.day]) {
+                    acc[disponibility.day] = [];
+                }
+                acc[disponibility.day].push(disponibility);
+                return acc;
+            }, {});
 
         // Only keep this week's reservations
-        const filteredReservations = this.allReservations.filter((reservation) => {
-            return (this.currentWeek.year() === reservation.startDate.year()
-                    || this.currentWeek.year() === reservation.endDate.year())
-                && (this.currentWeek.isoWeek() === reservation.startDate.isoWeek()
-                    || this.currentWeek.isoWeek() === reservation.endDate.isoWeek());
-        });
-
-        // Reduce in map of day index to reservations
-        this.weekReservations = filteredReservations.reduce((acc, reservation) => {
-            if (!acc[reservation.startDate.day()]) {
-                acc[reservation.startDate.day()] = [];
-            }
-            acc[reservation.startDate.day()].push(reservation);
-            return acc;
-        }, {});
+        this.reservationWindow[weekIndex] = this.allReservations
+            .filter((reservation) => {
+                return weekClone.year() === reservation.startDate.year()
+                    && weekClone.isoWeek() === reservation.startDate.isoWeek();
+            }).reduce((acc, reservation) => {
+                if (!acc[reservation.startDate.day()]) {
+                    acc[reservation.startDate.day()] = [];
+                }
+                acc[reservation.startDate.day()].push(reservation);
+                return acc;
+            }, {});
     }
 
     constructor() {
@@ -109,8 +135,8 @@ class PlanningLogicManager {
         const dayIndex = this.currentWeek.days();
 
         return {
-            disponibilities: this.weekDisponibilities[dayIndex],
-            reservations: this.weekReservations[dayIndex],
+            disponibilities: this.disponibilitiesWindow[1][dayIndex],
+            reservations: this.reservationWindow[1][dayIndex],
             dayIndex: this.currentWeek.date(),
             dayName: `${dayIndexToDayName[dayIndex]} ${this.currentWeek.date()} ${monthIndexToMonthName[this.currentWeek.month()]}`,
             isoString: this.currentWeek.toISOString(),
@@ -127,7 +153,14 @@ class PlanningLogicManager {
 
         // If the week has changed, we need to refresh the disponibilities and reservations
         if (previousWeek !== this.currentWeek.isoWeek()) {
-            await this.refreshWeek();
+            // Shift window to the left
+            this.disponibilitiesWindow[0] = this.disponibilitiesWindow[1];
+            this.disponibilitiesWindow[1] = this.disponibilitiesWindow[2];
+
+            this.reservationWindow[0] = this.reservationWindow[1];
+            this.reservationWindow[1] = this.reservationWindow[2];
+
+            await this.refreshWeek(2);
         }
 
         return this.getCurrentDay();
@@ -136,13 +169,27 @@ class PlanningLogicManager {
     async getNextWeek(): Promise<void> {
         this.currentWeek.add(1, "weeks");
 
-        await this.refreshWeek();
+        // Shift window to the left
+        this.disponibilitiesWindow[0] = this.disponibilitiesWindow[1];
+        this.disponibilitiesWindow[1] = this.disponibilitiesWindow[2];
+
+        this.reservationWindow[0] = this.reservationWindow[1];
+        this.reservationWindow[1] = this.reservationWindow[2];
+
+        await this.refreshWeek(2);
     }
 
     async getPreviousWeek(): Promise<void> {
         this.currentWeek.subtract(1, "weeks");
 
-        await this.refreshWeek();
+        // Shift window to the right
+        this.disponibilitiesWindow[2] = this.disponibilitiesWindow[1];
+        this.disponibilitiesWindow[1] = this.disponibilitiesWindow[0];
+
+        this.reservationWindow[2] = this.reservationWindow[1];
+        this.reservationWindow[1] = this.reservationWindow[0];
+
+        await this.refreshWeek(0);
     }
 
     /**
@@ -155,7 +202,14 @@ class PlanningLogicManager {
 
         // If the week has changed, we need to refresh the disponibilities and reservations
         if (previousWeek !== this.currentWeek.isoWeek()) {
-            await this.refreshWeek();
+            // Shift window to the right
+            this.disponibilitiesWindow[2] = this.disponibilitiesWindow[1];
+            this.disponibilitiesWindow[1] = this.disponibilitiesWindow[0];
+
+            this.reservationWindow[2] = this.reservationWindow[1];
+            this.reservationWindow[1] = this.reservationWindow[0];
+
+            await this.refreshWeek(0);
         }
 
         return this.getCurrentDay();
@@ -172,8 +226,8 @@ class PlanningLogicManager {
         this.currentWeek = moment(new Date(2022, 7, 25, 12));
     }
 
-    getReservations(): { [key: number]: Reservation[] } {
-        return this.weekReservations;
+    getReservations(weekIndex = 1): { [key: number]: Reservation[] } {
+        return this.reservationWindow[weekIndex];
     }
 
     getCurrentWeek(): Moment {
@@ -181,6 +235,6 @@ class PlanningLogicManager {
     }
 }
 
-const planningLogicManager = new PlanningLogicManager();
+const experimentalPlanningLogicManager = new ExperimentalPlanningLogicManager();
 
-export default planningLogicManager;
+export default experimentalPlanningLogicManager;

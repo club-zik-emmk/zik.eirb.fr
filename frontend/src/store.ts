@@ -22,7 +22,8 @@ const store = createStore({
                 id: "",
                 admin: false,
                 member: false
-            }
+            },
+            lastCacheRefresh: -1,
         }
     },
     mutations: {
@@ -37,6 +38,9 @@ const store = createStore({
         },
         setUser(state, user) {
             state.user = user;
+        },
+        setLastCacheRefresh(state, lastCacheRefresh) {
+            state.lastCacheRefresh = lastCacheRefresh;
         }
     },
     actions: {
@@ -72,6 +76,9 @@ const store = createStore({
                 admin: false,
                 member: false
             });
+        },
+        setLastCacheRefresh({commit}, lastCacheRefresh) {
+            commit("setLastCacheRefresh", lastCacheRefresh);
         }
     },
     plugins: [createPersistedState({
