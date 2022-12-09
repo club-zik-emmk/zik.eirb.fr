@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { Reservation } from "../models";
 import { ReservationUser } from "../models";
 import { error, success } from "../utils";
+import {Op} from "sequelize";
 
 const reservationController = {
     listAllReservations,
@@ -147,17 +148,39 @@ async function createAdminReservation(req: Request, res: Response) {
         return error(res, "La date de début doit être avant la date de fin", "VALIDATION/START_DATE_BEFORE_END_DATE");
     }
 
-    // delete all previous reservation between startDate and endDate
-    Reservation.destroy({
+    // Find all reservations overlapping with the new one
+    const overlappingReservations = await Reservation.findAll({
         where: {
             startDate: {
-                $between: [req.body.startDate, req.body.endDate]
+                [Op.or]: {
+                    [Op.lte]: req.body.startDate,
+                    [Op.between]: [req.body.startDate, req.body.endDate]
+                }
             },
             endDate: {
-                $between: [req.body.startDate, req.body.endDate]
+                [Op.or]: {
+                    [Op.gte]: req.body.endDate,
+                    [Op.between]: [req.body.startDate, req.body.endDate]
+                }
             }
         }
     });
+
+    for (let reservation of overlappingReservations) {
+        // Remove ReservationUsers rows associated with the reservation
+        await ReservationUser.destroy({
+            where: {
+                reservationId: reservation.id
+            }
+        });
+
+        // Remove the reservation
+        await Reservation.destroy({
+            where: {
+                id: reservation.id
+            }
+        });
+    }
 
     // Create new admin reservation that starts at startDate and ends at endDate
     const startDate = new Date(req.body.startDate);
@@ -177,21 +200,22 @@ async function createAdminReservation(req: Request, res: Response) {
         // the first reservation starts at startDate and ends at 22h30
         // the last reservation starts at 8h00 and ends at endDate
         // the other reservations start at 8h00 and end at 22h30
-        const firstReservation = {
+
+        // First reservation
+        reservations.push({
             title: req.body.title,
             startDate: startDate,
             endDate: new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 22, 30),
             ownerId: req.body.ownerId
-        };
-        reservations.push(firstReservation);
+        });
 
-        const lastReservation = {
+        // Last reservation
+        reservations.push({
             title: req.body.title,
             startDate: new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 8, 0),
             endDate: endDate,
             ownerId: req.body.ownerId
-        };
-        reservations.push(lastReservation);
+        });
 
         const currentDate = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 8, 0);
         while (currentDate < endDate) {
@@ -205,13 +229,13 @@ async function createAdminReservation(req: Request, res: Response) {
             currentDate.setDate(currentDate.getDate() + 1);
         }
     }
-        
+
     return Reservation.bulkCreate(reservations).then((reservations) => {
         return success(res, "Réservations créées avec succès !", "RESERVATION/CREATED", reservations);
         }).catch((e) => {
             console.log(e);
             return error(res, "Erreur lors de la création des réservations!", "RESERVATION/CREATE_FAILED");
-            });    
+            });
 }
 
 
