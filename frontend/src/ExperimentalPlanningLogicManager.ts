@@ -73,6 +73,7 @@ class ExperimentalPlanningLogicManager {
             store.state.lastCacheRefresh === -1
             || moment().diff(store.state.lastCacheRefresh, "minutes") > 5
         ) {
+            console.log("ExperimentalPlanningLogicManager: refreshWeek(): Refreshing cache");
             await this.refreshDisponibilities();
             await this.refreshReservations();
 
@@ -96,12 +97,15 @@ class ExperimentalPlanningLogicManager {
                 break;
         }
 
+        console.log("ExperimentalPlanningLogicManager: refreshWeek(): weekClone: ", weekClone.format("YYYY-MM-DD"));
+        console.log("ExperimentalPlanningLogicManager: refreshWeek(): allDisponibilities: ", this.allDisponibilities);
+
         // Only keep the disponibilities that are in the current week
         this.disponibilitiesWindow[weekIndex] = this.allDisponibilities
             .filter((disponibility) => {
-                return weekClone.year() === disponibility.startDate.year()
-                    && weekClone.isoWeek() === disponibility.startDate.isoWeek();
-            }).reduce((acc, disponibility) => {
+                return weekClone.isBetween(disponibility.startDate, disponibility.endDate);
+            })
+            .reduce((acc, disponibility) => {
                 if (!acc[disponibility.day]) {
                     acc[disponibility.day] = [];
                 }
@@ -109,12 +113,15 @@ class ExperimentalPlanningLogicManager {
                 return acc;
             }, {});
 
+        console.log("ExperimentalPlanningLogicManager: refreshWeek(): filteredDisponibilities: ", this.allDisponibilities.filter((disponibility) => weekClone.isSame(disponibility.startDate, "week")));
+
         // Only keep this week's reservations
         this.reservationWindow[weekIndex] = this.allReservations
             .filter((reservation) => {
-                return weekClone.year() === reservation.startDate.year()
-                    && weekClone.isoWeek() === reservation.startDate.isoWeek();
-            }).reduce((acc, reservation) => {
+                return weekClone.isoWeek() === reservation.startDate.isoWeek()
+                    && weekClone.year() === reservation.startDate.year();
+            })
+            .reduce((acc, reservation) => {
                 if (!acc[reservation.startDate.day()]) {
                     acc[reservation.startDate.day()] = [];
                 }
@@ -133,6 +140,8 @@ class ExperimentalPlanningLogicManager {
      */
     getCurrentDay(): Day {
         const dayIndex = this.currentWeek.days();
+
+        console.log("ExperimentalPlanningLogicManager: getCurrentDay(): disponibilitiesWindow[1]: ", this.disponibilitiesWindow[1]);
 
         return {
             disponibilities: this.disponibilitiesWindow[1][dayIndex],
@@ -216,9 +225,14 @@ class ExperimentalPlanningLogicManager {
     }
 
     async setWeek(date: Moment) {
-        this.currentWeek = date;
+        this.currentWeek = date.clone();
 
-        await this.refreshWeek();
+        console.log("ExperimentalPlanningLogicManager: setWeek(): date: ", date);
+
+        for (let weekIndex of [1, 2, 0]) {
+            console.log("ExperimentalPlanningLogicManager: setWeek(): weekIndex: ", weekIndex);
+            await this.refreshWeek(weekIndex);
+        }
     }
 
     resetToToday(): void {

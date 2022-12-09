@@ -115,6 +115,7 @@ import {emitter} from "../../emitter";
 import Reservation from "./Reservation.vue";
 import Disponibility from "./Disponibility.vue";
 import SelectedReservation from "./SelectedReservation.vue";
+import experimentalPlanningLogicManager from "@/ExperimentalPlanningLogicManager";
 
 export default {
   name: "Planning",
@@ -125,13 +126,14 @@ export default {
   },
   data() {
     return {
-      planningManager: planningLogicManager,
+      planningManager: experimentalPlanningLogicManager,
       isLoading: true,
       selectedReservation: null,
     }
   },
   async created() {
     this.$store.dispatch('resetCurrentDay');
+    this.$store.dispatch("setLastCacheRefresh", -1);
 
     this.planningManager.resetToToday();
     await this.planningManager.refreshWeek();
@@ -199,6 +201,7 @@ export default {
       return document.documentElement.clientWidth < 768;
     },
     currentDay() {
+      console.log(`Planning.vue: currentDay(): `, this.$store.state.currentDay);
       return this.$store.state.currentDay;
     },
     isUserMember() {
