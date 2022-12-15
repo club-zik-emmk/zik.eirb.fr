@@ -5,3 +5,8 @@
 :root {
     background-color: #2D333A;
 }
+
+@font-face {
+    font-family: 'Raleway';
+    src: url(assets/fonts/Raleway-VariableFont_wght.ttf) format('truetype');
+}

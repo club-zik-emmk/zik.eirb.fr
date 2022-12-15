@@ -1,5 +1,5 @@
 <template>
-  <div class="absolute left-0 w-[6vw] lg:w-12 disponibility" :style="style"></div>
+  <div class="absolute left-0 w-[6vw] lg:w-12 disponibility rounded-lg" :style="style"></div>
 </template>
 
 <script>
@@ -41,8 +41,6 @@ export default {
   top: calc((var(--start) * 3rem) + ((var(--start) - var(--round-hour-start)) * 0.25rem) + ((var(--round-hour-start) + 1) * 1rem));
   height: calc((var(--height) * 3rem) + ((var(--height) - var(--round-hour)) * 0.25rem) + ((var(--round-hour)) * 1rem));
   background-color: var(--background-color);
-  border-bottom: 2px dashed rgb(0 0 0 / 10%);
-  border-top: 2px dashed rgb(0 0 0 / 10%);
   z-index: var(--priority);
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full flex flex-row justify-between px-20 h-[8vh] header">
+  <div class="w-full flex flex-row justify-between px-20 h-[8vh] bg-[#1F1F1F]">
 
     <div class="h-full flex items-center">
       <!-- Logo Zik -->
@@ -10,26 +10,66 @@
 
       <!-- Nav bar -->
       <nav class="py-7 flex justify-evenly items-center">
-        <router-link to="/" class="rounded-3xl hover:bg-red-900 px-7 py-2 duration-300">Accueil</router-link>
-        <router-link to="/planning" class="rounded-3xl hover:bg-red-900 px-7 py-2 duration-300">Planning</router-link>
 
-        <a :href="cotisationLink" class="rounded-3xl hover:bg-red-900 px-7 py-2 duration-300" v-show="!isUserAuthenticated || !isUserMember" target="_blank">Cotiser</a>
+        <router-link
+            to="/"
+            class="px-5 py-2 rounded-md hover:cursor-pointer w-52 text-center hover:bg-[#404040] bg-[#2F2F2F] duration-300 hover:cursor-pointer ml-5">
+          Accueil
+        </router-link>
 
-        <a href="#" class="rounded-3xl hover:bg-red-900 px-7 py-2 duration-300" v-show="isUserAuthenticated && !isUserMember">Contact</a>
+        <router-link
+            to="/planning"
+            class="px-5 py-2 rounded-md hover:cursor-pointer w-52 text-center hover:bg-[#404040] bg-[#2F2F2F] duration-300 hover:cursor-pointer ml-5">
+          Planning
+        </router-link>
 
-        <DropdownNav v-if="isUserAuthenticated && isUserAdmin" title="Admin" :links="adminLinks"></DropdownNav>
-        <DropdownNav v-if="isUserAuthenticated && isUserMember" title="Membre" :links="memberLinks"></DropdownNav>
+        <a
+            :href="cotisationLink"
+            class="px-5 py-2 rounded-md hover:cursor-pointer w-52 text-center hover:bg-[#404040] bg-[#2F2F2F] duration-300 hover:cursor-pointer ml-5"
+            v-show="!isUserAuthenticated || !isUserMember"
+            target="_blank">
+          Cotiser
+        </a>
+
+        <a
+            href="#"
+            class="px-5 py-2 rounded-md hover:cursor-pointer w-52 text-center hover:bg-[#404040] duration-300 hover:cursor-pointer ml-5"
+            v-show="isUserAuthenticated && !isUserMember">
+          Contact
+        </a>
+
+        <DropdownNav
+            v-if="isUserAuthenticated && isUserAdmin"
+            title="Admin"
+            :links="adminLinks" />
+
+        <DropdownNav
+            v-if="isUserAuthenticated && isUserMember"
+            title="Membre"
+            :links="memberLinks" />
 
       </nav>
     </div>
 
     <!-- Connection button -->
-    <div class="py-7 flex justify-evenly items-center" v-if="isUserAuthenticated">
-      <div class="rounded-3xl hover:bg-red-900 px-7 py-2 duration-300" @click="logout">Déconnexion</div>
+    <div
+        class="py-7 flex justify-evenly items-center"
+        v-if="isUserAuthenticated">
+      <div
+          class="px-5 text-black font-semibold py-2 rounded-md hover:cursor-pointer w-52 text-center bg-[#ee5253] hover:bg-[#ff6b6b] duration-300 hover:cursor-pointer"
+          @click="logout">
+        Déconnexion
+      </div>
     </div>
 
-    <div class="py-7 flex justify-evenly items-center" v-else>
-      <router-link to="/auth" class="rounded-3xl hover:bg-red-900 px-7 py-2 duration-300">Connexion</router-link>
+    <div
+        class="py-7 flex justify-evenly items-center"
+        v-else>
+      <router-link
+          to="/auth"
+          class="px-5 py-2 rounded-md hover:cursor-pointer w-52 text-center hover:text-black hover:bg-[#8DD18A] duration-300 hover:cursor-pointer duration-300 hover:cursor-pointer">
+        Connexion
+      </router-link>
     </div>
 
 
@@ -74,7 +114,4 @@ export default {
 </script>
 
 <style scoped>
-.header {
-  border-bottom: solid 1px rgb(91 95 99);
-}
 </style>

@@ -1,10 +1,10 @@
 <template>
   <div class="h-[92vh] w-full flex justify-center">
-    <div class="w-full lg:w-1/3 bg-blue-900 flex flex-col items-center py-10">
+    <div class="w-full lg:w-1/3 flex flex-col items-center py-10">
       <div class="uppercase font-bold text-4xl mb-5">Événements</div>
 
       <div class="flex flex-col" v-show="events.length > 0">
-        <a v-for="event in events" :key="event.name" :href="event.link" class="w-96 bg-red-900 px-5 py-5 uppercase rounded-lg mt-5" target="_blank">
+        <a v-for="event in events" :key="event.name" :href="event.link" class="w-96 bg-[#2F2F2F] hover:bg-[#6b6a6a] duration-300 px-5 py-5 uppercase rounded-lg mt-5" target="_blank">
           {{event.name}}
         </a>
       </div>

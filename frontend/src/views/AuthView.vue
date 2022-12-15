@@ -3,32 +3,29 @@
 
     <div class="w-[50rem] flex flex-col">
 
-      <div class="bg-gray-200 py-7 px-5 lg:px-10 rounded-xl mb-5">
+      <div class="bg-[#1F1F1F] py-7 px-5 lg:px-10 rounded-xl mb-2">
         <div class="uppercase text-3xl font-bold mb-5">Confidentialité</div>
 
         <p class="mb-5">
-          En vous connectant, vous acceptez que vos données personnelles soient traitées par Eirbware et le Bureau des Arts de l'<span class="uppercase">Enseirb-Matmeca</span> .
+          En vous connectant, vous acceptez que vos données personnelles soient traitées par Eirbware
+          et le Zik de l'<span class="uppercase">Enseirb-Matmeca</span> .
         </p>
 
-        <p>
+        <p class="mb-2">
           Nous recueillons:
         </p>
 
         <ul class="pl-10 mb-5">
-          <li class="list-disc">Votre nom</li>
-          <li class="list-disc">Votre prénom</li>
-          <li class="list-disc">Votre adresse mail de l'école</li>
           <li class="list-disc">Votre identifiant de connexion au <span class="uppercase">Cas</span> de l'<span class="uppercase">Enseirb-Matmeca</span></li>
+          <li class="list-disc">Les données que vous entrez volontairement dans l'application</li>
         </ul>
 
-        <p class="mb-5">Ces données sont utilisées dans le seul but de pouvoir fournir le service que vous utilisez, et seuls les membres d'Eirbware et du Bureau des Arts de l'<span class="uppercase">Enseirb-Matmeca</span> peuvent accéder à ces données.</p>
+        <p class="mb-5">Ces données sont utilisées dans le seul but de pouvoir fournir le service que vous utilisez, et seuls les membres d'Eirbware et du Zik de l'<span class="uppercase">Enseirb-Matmeca</span> peuvent accéder à ces données.</p>
         <p class="mb-5">À tout moment, vous pouvez demander la suppression ou bien la modification de vos informations en nous envoyant un mail à <a href="mailto:eirbware@enseirb-matmeca.fr" class="underline text-blue-400">eirbware@enseirb-matmeca.fr</a>.</p>
-        <p>Les données récoltées sont automatiquement supprimées à la fin de votre scolarité, à l'exception des membres du Bureau des Arts dont les données sont utilisées dans un but de conservation de l'histoire du BDA.</p>
-
       </div>
 
       <a :href="authUrl"
-         class="btn mb-4 lg:mb-0">
+         class="btn mb-4 lg:mb-0 w-fit px-5 py-3 rounded-lg bg-[#8DD18A] hover:bg-[#b1d1af] duration-300 hover:cursor-pointer text-black font-semibold">
         Se connecter avec le CAS
       </a>
     </div>

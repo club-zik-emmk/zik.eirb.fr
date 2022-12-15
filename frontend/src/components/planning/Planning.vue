@@ -23,7 +23,7 @@
           Semaines
         </div>
 
-        <router-link to="/book" class="bg-green-400 rounded-lg w-32 h-12 flex flex-row items-center justify-evenly px-3"
+        <router-link to="/book" class="text-black font-semibold bg-[#8DD18A] hover:bg-[#b1d1af] duration-300 hover:cursor-pointer rounded-lg w-32 h-12 flex flex-row items-center justify-evenly px-3"
                      v-if="isUserMember">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                stroke="currentColor" class="w-6 h-6">
@@ -46,7 +46,7 @@
         </div>
 
         <!-- Day name -->
-        <div>
+        <div class="w-[50%] text-center">
           <span class="font-bold text-4xl mr-3">{{ this.currentDayName }}</span> <span
             class="text-4xl">{{ this.currentDayNumber }}</span>
         </div>

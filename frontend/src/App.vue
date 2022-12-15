@@ -3,7 +3,10 @@
   <MobileHeader v-if="isMobile"/>
   <DesktopHeader v-else/>
 
-  <router-view></router-view>
+  <router-view
+    class="bg-[#101010]">
+
+  </router-view>
 </template>
 
 <script>
@@ -27,7 +30,8 @@ export default {
 
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: Raleway, sans-serif;
+  letter-spacing: .04rem;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #F9FBFB;

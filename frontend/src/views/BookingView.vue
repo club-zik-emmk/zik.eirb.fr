@@ -22,8 +22,8 @@
           <div>
             Heure de début
 
-            <Datepicker v-model="startTime" timePicker minutesIncrement="15" :maxTime="{ hours: 22, minutes: 0 }"
-                        :minTime="{ hours: 8, minutes: 0 }"/>
+            <Datepicker v-model="startTime" timePicker minutesIncrement="15" :maxTime="!this.isUserAdmin ? { hours: 22, minutes: 0 } : undefined"
+                        :minTime="!this.isUserAdmin ? { hours: 8, minutes: 0 } : undefined"/>
           </div>
         </div>
 
@@ -31,8 +31,8 @@
           <div>
             Heure de fin
 
-            <Datepicker v-model="endTime" timePicker minutesIncrement="15" :maxTime="{ hours: 22, minutes: 0 }"
-                        :minTime="{ hours: 8, minutes: 0 }"/>
+            <Datepicker v-model="endTime" timePicker minutesIncrement="15" :maxTime="!this.isUserAdmin ? { hours: 22, minutes: 0 } : undefined"
+                        :minTime="!this.isUserAdmin ? { hours: 8, minutes: 0 } : undefined"/>
           </div>
         </div>
 
