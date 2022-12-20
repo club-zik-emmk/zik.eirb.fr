@@ -80,6 +80,7 @@
 import {logoutUser} from "@/services/authenticationService";
 import DropdownNav from "@/components/DropdownNav.vue";
 import links from "@/links.json";
+import axiosInstance from "@/axiosInstance";
 
 export default {
   name: "DesktopHeader",
@@ -90,6 +91,11 @@ export default {
       memberLinks: links.member,
       cotisationLink: links.cotisation
     }
+  },
+  created() {
+    axiosInstance.get('/api/v1/me').catch(() => {
+      this.$store.dispatch("resetUser");
+    });
   },
   computed: {
     isUserAuthenticated() {
