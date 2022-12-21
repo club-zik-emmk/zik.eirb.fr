@@ -1,7 +1,7 @@
 <template>
   <div
       id="selected-reservation"
-      class="fixed w-full h-[92vh] lg:sticky lg:h-fit lg:p-3 lg:w-96 top-[8vh] lg:ml-[33rem] bg-[#1F1F1F] z-[100] flex flex-col rounded-lg"
+      class="fixed w-full h-[92vh] lg:sticky lg:h-fit p-5 lg:p-3 lg:w-96 top-[8vh] lg:ml-[33rem] bg-[#1F1F1F] z-[100] flex flex-col rounded-lg"
   >
 
     <!-- Mobile header -->

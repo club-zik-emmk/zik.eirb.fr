@@ -1,10 +1,11 @@
 <template>
   <div
-      class="flex flex-col z-20 ml-5"
+      class="flex flex-col ml-5"
+      style="z-index: 1;"
       :class="dynamicClassName">
 
     <div
-        class="px-5 py-2 rounded-md hover:cursor-pointer w-52 text-center duration-300"
+        class="px-5 py-2 rounded-md hover:cursor-pointer w-52 text-center duration-300 bg-[#2F2F2F]"
         :class="buttonClass"
         @click="onButtonClick">
       {{title}}

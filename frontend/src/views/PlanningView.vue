@@ -22,6 +22,8 @@ export default {
   created() {
     if (!this.isMobile) {
       this.$store.dispatch("openWeekList");
+    } else {
+      this.$store.dispatch("closeWeekList");
     }
 
     emitter.on("closeWeekList", () => {

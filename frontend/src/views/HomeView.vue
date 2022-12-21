@@ -2,8 +2,8 @@
   <main class="h-[92vh] overflow-hidden w-full">
     <!-- Photo showcase -->
     <div class="wrapper relative w-full h-full" :style="backgroundStyle">
-      <div class="h-full w-full absolute top-o left-0 bg-black opacity-20"></div>
-      <div class="w-full h-full absolute top-0 left-0 z-10 flex items-center justify-center">
+      <div class="h-full w-full absolute top-0 left-0 bg-black opacity-20"></div>
+      <div class="w-full h-full absolute top-0 left-0 flex items-center justify-center" style="z-index: 1;">
 
         <div class="flex flex-col justify-center items-center">
           <!-- Logo Zik -->
@@ -12,8 +12,11 @@
           </div>
 
           <!-- Description -->
-          <div class="uppercase text-4xl font-bold">
-            Ouais le zik
+          <div class="uppercase text-5xl font-bold">
+            Le Zik
+          </div>
+          <div class="uppercase text-xl font-bold text-[#cccccc]">
+            de l'enseirb-matmeca
           </div>
         </div>
       </div>
@@ -57,5 +60,7 @@ export default {
   background-image: var(--url);
   background-size: cover;
   background-repeat: no-repeat;
+
+  z-index: 0;
 }
 </style>

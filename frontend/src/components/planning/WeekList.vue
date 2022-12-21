@@ -1,10 +1,10 @@
 <template>
-  <div class="w-full flex flex-col week-list h-full">
+  <div class="w-full flex flex-col week-list h-full bg-[#101010]">
     <!-- Week list header if mobile -->
-    <div class="w-full p-5 week-list-header" v-show="this.isMobile">
+    <div class="w-full p-5 week-list-header bg-[#1F1F1F]" v-show="this.isMobile">
       <div @click="closeWeekList">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-             class="w-10 h-10 p-2 border-2 rounded-lg">
+             class="w-10 h-10 p-2 hover:bg-[#404040] bg-[#2F2F2F] rounded-lg">
           <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
         </svg>
       </div>

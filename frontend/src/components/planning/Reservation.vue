@@ -101,9 +101,11 @@ export default {
     },
     reservationClass() {
       return {
-        'hover:bg-red-200 duration-300 hover:cursor-pointer': this.deletable,
+        'duration-300 hover:cursor-pointer': this.deletable,
         'bg-[#332A44]': !this.isReservationAdmin,
         'bg-[#3F1B0C]': this.isReservationAdmin,
+        'hover:bg-[#655587]': !this.isReservationAdmin && this.deletable,
+        'hover:bg-[#873a1c]': this.isReservationAdmin && this.deletable,
       }
     },
     deletable() {

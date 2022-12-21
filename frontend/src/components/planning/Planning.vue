@@ -13,7 +13,7 @@
 
       <!-- Actions -->
       <div class="mb-12 flex flex-row w-full flex flex-row justify-between lg:justify-end pt-5 lg:pt-0">
-        <div class="bg-red-900 rounded-lg rounded-lg w-32 h-12 flex flex-row items-center justify-evenly px-3"
+        <div class="hover:bg-[#404040] bg-[#2F2F2F] rounded-lg rounded-lg w-32 h-12 flex flex-row items-center justify-evenly px-3"
              v-show="this.isMobile" @click="openWeekList">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                stroke="currentColor" class="w-6 h-6">
