@@ -76,7 +76,7 @@ export default {
       return window.innerWidth < 768;
     },
     isDeletable() {
-      return this.reservation.ownerId === this.$store.state.user.id || this.$store.state.user.isAdmin;
+      return this.reservation.ownerId === this.$store.state.user.id || this.$store.state.user.admin;
     },
   }
 }

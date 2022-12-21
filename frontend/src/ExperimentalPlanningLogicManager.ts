@@ -236,8 +236,7 @@ class ExperimentalPlanningLogicManager {
     }
 
     resetToToday(): void {
-        // this.currentWeek = moment();
-        this.currentWeek = moment(new Date(2022, 7, 25, 12));
+        this.currentWeek = moment();
     }
 
     getReservations(weekIndex = 1): { [key: number]: Reservation[] } {

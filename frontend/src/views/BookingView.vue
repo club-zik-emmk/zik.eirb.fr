@@ -1,13 +1,13 @@
 <template>
-  <div class="h-[92vh] w-full flex justify-center">
+  <div class="h-[92vh] w-full flex justify-center lg:py-2">
     <div id="day"
-         class="w-full lg:w-1/3 h-full overflow-y-auto px-3 lg:px-16 lg:py-6 flex flex-col justify-between py-7">
+      class="w-full lg:w-1/3 h-full overflow-y-auto px-3 lg:px-12 lg:py-6 flex flex-col justify-between py-7 bg-[#1F1F1F] lg:rounded-xl">
       <div class="w-full flex flex-col">
         <router-link to="/planning"
-                     class="bg-blue-900 rounded-lg w-32 lg:w-42 h-12 flex flex-row justify-evenly items-center">
+          class="hover:bg-[#404040] bg-[#2F2F2F] duration-300 rounded-lg w-32 lg:w-42 h-12 flex flex-row justify-evenly items-center">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-               stroke="currentColor" class="w-6 h-6">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/>
+            stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
           </svg>
 
           <span>Retour</span>
@@ -22,8 +22,9 @@
           <div>
             Heure de début
 
-            <Datepicker v-model="startTime" timePicker minutesIncrement="15" :maxTime="!this.isUserAdmin ? { hours: 22, minutes: 0 } : undefined"
-                        :minTime="!this.isUserAdmin ? { hours: 8, minutes: 0 } : undefined"/>
+            <Datepicker v-model="startTime" timePicker minutesIncrement="15"
+              :maxTime="!this.isUserAdmin ? { hours: 22, minutes: 0 } : undefined"
+              :minTime="!this.isUserAdmin ? { hours: 8, minutes: 0 } : undefined" />
           </div>
         </div>
 
@@ -31,8 +32,9 @@
           <div>
             Heure de fin
 
-            <Datepicker v-model="endTime" timePicker minutesIncrement="15" :maxTime="!this.isUserAdmin ? { hours: 22, minutes: 0 } : undefined"
-                        :minTime="!this.isUserAdmin ? { hours: 8, minutes: 0 } : undefined"/>
+            <Datepicker v-model="endTime" timePicker minutesIncrement="15"
+              :maxTime="!this.isUserAdmin ? { hours: 22, minutes: 0 } : undefined"
+              :minTime="!this.isUserAdmin ? { hours: 8, minutes: 0 } : undefined" />
           </div>
         </div>
 
@@ -51,32 +53,27 @@
 
 
       <!-- User list and search query -->
-      <div
-          class="w-96 h-96 bg-red-900 rounded-lg overflow-hidden my-10"
-          v-if="!isAdminReservation"
-      >
-        <input type="text" class="w-full h-[10%] text-black px-5" v-model="searchQuery" @input="handleSearch"/>
+      <div class="w-full flex justify-center">
+        <div class="w-full h-96 bg-[#2F2F2F]  rounded-lg overflow-hidden my-10" v-if="!isAdminReservation">
+          <input type="text" class="w-full h-12 outline-none text-black px-5" v-model="searchQuery"
+            @input="handleSearch" />
 
-        <div class="flex flex-col overflow-y-auto shrink-0 h-[90%]">
-          <div v-for="user in users"
-               class="px-2 py-1 border-b-[1px] border-solid border-black last:border-b-0 hover:cursor-pointer"
-               :class="selectedUsers.includes(user) ? 'bg-blue-900 text-white' : ''"
-               @click="handleUserClick(user)">
-            {{ user }}
+          <div class="flex flex-col overflow-y-auto shrink-0 h-[90%]">
+            <div v-for="user in users"
+              class="px-2 py-1 hover:bg-[#404040] duration-300 hover:cursor-pointer h-12 shrink-0 flex items-center"
+              :class="selectedUsers.includes(user) ? 'bg-[#404040]' : ''" @click="handleUserClick(user)">
+              {{ user }}
+            </div>
           </div>
         </div>
       </div>
 
 
       <div class="w-full flex justify-center">
-        <div class="w-full py-4 flex justify-center rounded-lg duration-300"
-             :class="{
-          'bg-red-900': !isReservationValid,
-          'bg-green-900': this.isReservationValid,
-          'hover:cursor-pointer': this.isReservationValid,
-          'hover:bg-green-800': this.isReservationValid,
-        }"
-             @click="onBookingButtonClick">
+        <div class="w-full py-4 flex justify-center rounded-lg duration-300 text-black" :class="{
+          'bg-[#9e3737]': !isReservationValid,
+          'hover:cursor-pointer bg-[#8DD18A] hover:bg-[#b1d1af]': this.isReservationValid,
+        }" @click="onBookingButtonClick">
           <span>Réserver</span>
         </div>
       </div>
@@ -170,8 +167,8 @@ export default {
     },
     fetchUsers() {
       axiosInstance.get("/api/v1/users").then(response => {
-        this.users = response.data.data.map(u => u.id);
-        this.usersBackup = response.data.data.map(u => u.id);
+        this.users = response.data.data.map(u => u.id).filter(u => u !== this.$store.state.user.id && u !== "ADMIN");
+        this.usersBackup = response.data.data.map(u => u.id).filter(u => u !== this.$store.state.user.id && u !== "ADMIN");
       });
     }
   },
@@ -209,9 +206,9 @@ export default {
         const endDate = moment(disponibility.endDate);
 
         return reservationStartDate.isBetween(startDate, endDate)
-            && reservationEndDate.isBetween(startDate, endDate)
-            && !reservationStartDate.isSame(startDate, "minute")
-            && !reservationEndDate.isSame(endDate, "minute");
+          && reservationEndDate.isBetween(startDate, endDate)
+          && !reservationStartDate.isSame(startDate, "minute")
+          && !reservationEndDate.isSame(endDate, "minute");
       });
 
       // Check that the current reservation doesn't overlap with another one
@@ -220,16 +217,16 @@ export default {
         const endDate = moment(reservation.endDate);
 
         return (reservationStartDate.isBetween(startDate, endDate) || reservationStartDate.isSameOrBefore(startDate))
-            || (reservationEndDate.isBetween(startDate, endDate) || reservationEndDate.isSameOrAfter(endDate));
+          || (reservationEndDate.isBetween(startDate, endDate) || reservationEndDate.isSameOrAfter(endDate));
       });
 
       // Check that the span of the reservation is less or equal to 3 hours
       const isSpanValid = reservationEndDate.diff(reservationStartDate, "hours") <= 3;
 
       return (
-          isDuringDisponibility
-          && !isDuringReservation
-          && (isSpanValid || this.isUserAdmin)
+        isDuringDisponibility
+        && !isDuringReservation
+        && (isSpanValid || this.isUserAdmin)
       ) || this.isAdminReservation;
     },
     areTimesValid() {
@@ -251,8 +248,8 @@ export default {
     },
     isReservationValid() {
       return this.reservationIsAvailable
-          && this.areTimesValid
-          && this.title !== "";
+        && this.areTimesValid
+        && this.title !== "";
     }
   }
 }
