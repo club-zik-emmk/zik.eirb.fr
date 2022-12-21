@@ -42,7 +42,7 @@ export default {
       }
 
       return {
-        '--url': `url('/img/${directory}/cover_${randomNumber.toString().padStart(2, '0')}.png')`
+        '--url': `url('/img/${directory}/cover_${randomNumber.toString().padStart(2, '0')}.webp')`
       };
     },
     isMobile() {
