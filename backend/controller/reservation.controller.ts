@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { Reservation } from "../models";
 import { ReservationUser } from "../models";
 import { error, success } from "../utils";
-import {Op} from "sequelize";
+import { Op } from "sequelize";
 
 const reservationController = {
     listAllReservations,
@@ -232,40 +232,45 @@ async function createAdminReservation(req: Request, res: Response) {
 
     return Reservation.bulkCreate(reservations).then((reservations) => {
         return success(res, "Réservations créées avec succès !", "RESERVATION/CREATED", reservations);
-        }).catch((e) => {
-            console.log(e);
-            return error(res, "Erreur lors de la création des réservations!", "RESERVATION/CREATE_FAILED");
-            });
+    }).catch((e) => {
+        console.log(e);
+        return error(res, "Erreur lors de la création des réservations!", "RESERVATION/CREATE_FAILED");
+    });
 }
 
 
-function deleteReservationById(req: Request, res: Response) {
+async function deleteReservationById(req: Request, res: Response) {
     // @ts-ignore
     // check that the user is connected
     if (!req.session.user) {
         return error(res, "Vous devez être connecté pour supprimer une réservation", "AUTH/NOT_AUTHENTICATED", 401);
     }
-    // Check that the user is the owner of the reservation or an admin
-    return Reservation.findByPk(req.params.id).then((reservation) => {
-        if (reservation) {
-            // @ts-ignore
-            if (reservation.ownerId === req.session.user.id || req.session.user.isAdmin) {
-                return reservation.destroy().then(() => {
-                    return success(res, "Réservation supprimée avec succès !", "RESERVATION/DELETED", reservation.id);
-                }).catch((e) => {
-                    console.log(e);
-                    return error(res, "Erreur lors de la suppression de la réservation", "RESERVATION/DELETE_FAILED");
-                });
-            } else {
-                return error(res, "Vous n'êtes pas autorisé à supprimer cette réservation", "RESERVATION/DELETE_NOT_ALLOWED", 403);
-            }
-        } else {
-            return error(res, "Réservation introuvable !", "RESERVATION/NOT_FOUND", 404);
+
+    const reservation = await Reservation.findByPk(req.params.id);
+
+    if (!reservation) {
+        return error(res, "Réservation introuvable !", "RESERVATION/NOT_FOUND", 404);
+    }
+
+    const reservationUsers = await ReservationUser.findAll({
+        where: {
+            reservationId: req.params.id
         }
-    }).catch((e) => {
-        console.log(e);
-        return error(res, "Erreur lors de la suppression de la réservation", "RESERVATION/DELETE_FAILED");
-    });
+    }) || [];
+
+    for (let reservationUser of reservationUsers) {
+        await reservationUser.destroy();
+    }
+
+    // @ts-ignore
+    if (reservation.ownerId === req.session.user.id || req.session.user.admin) {
+        // @ts-ignore
+        await reservation.destroy();
+        // @ts-ignore
+        return success(res, "Réservation supprimée avec succès !", "RESERVATION/DELETED", reservation.id);
+    }
+
+    return error(res, "Vous n'êtes pas autorisé à supprimer cette réservation", "RESERVATION/DELETE_NOT_ALLOWED", 403);
 }
 
 

@@ -53,11 +53,23 @@ class ExperimentalPlanningLogicManager {
         const response = await axiosInstance.get("api/v1/reservations");
 
         this.allReservations = response.data.data.map((reservation: any) => {
+
+            // startDate and endDate are stored in the following format: "2023-01-18T18:00:00.000Z"
+            const startDateHour = parseInt(reservation.startDate.split("T")[1].split(":")[0]);
+            const startDateMinute = parseInt(reservation.startDate.split("T")[1].split(":")[1]);
+
+            const endDateHour = parseInt(reservation.endDate.split("T")[1].split(":")[0]);
+            const endDateMinute = parseInt(reservation.endDate.split("T")[1].split(":")[1]);
+
             // Parse starting date but set the time to 00:00:00
             const startDate = moment(reservation.startDate);
-
+            startDate.set("hour", startDateHour);
+            startDate.set("minute", startDateMinute);
+            
             // Parse ending date but set the time to 23:59:59
             const endDate = moment(reservation.endDate);
+            endDate.set("hour", endDateHour);
+            endDate.set("minute", endDateMinute);   
 
             return {
                 ...reservation,
@@ -73,7 +85,6 @@ class ExperimentalPlanningLogicManager {
             store.state.lastCacheRefresh === -1
             || moment().diff(store.state.lastCacheRefresh, "minutes") > 5
         ) {
-            console.log("ExperimentalPlanningLogicManager: refreshWeek(): Refreshing cache");
             await this.refreshDisponibilities();
             await this.refreshReservations();
 
@@ -97,8 +108,6 @@ class ExperimentalPlanningLogicManager {
                 break;
         }
 
-        console.log("ExperimentalPlanningLogicManager: refreshWeek(): weekClone: ", weekClone.format("YYYY-MM-DD"));
-        console.log("ExperimentalPlanningLogicManager: refreshWeek(): allDisponibilities: ", this.allDisponibilities);
 
         // Only keep the disponibilities that are in the current week
         this.disponibilitiesWindow[weekIndex] = this.allDisponibilities
@@ -112,8 +121,6 @@ class ExperimentalPlanningLogicManager {
                 acc[disponibility.day].push(disponibility);
                 return acc;
             }, {});
-
-        console.log("ExperimentalPlanningLogicManager: refreshWeek(): filteredDisponibilities: ", this.allDisponibilities.filter((disponibility) => weekClone.isSame(disponibility.startDate, "week")));
 
         // Only keep this week's reservations
         this.reservationWindow[weekIndex] = this.allReservations
@@ -140,8 +147,6 @@ class ExperimentalPlanningLogicManager {
      */
     getCurrentDay(): Day {
         const dayIndex = this.currentWeek.days();
-
-        console.log("ExperimentalPlanningLogicManager: getCurrentDay(): disponibilitiesWindow[1]: ", this.disponibilitiesWindow[1]);
 
         return {
             disponibilities: this.disponibilitiesWindow[1][dayIndex],
@@ -227,17 +232,14 @@ class ExperimentalPlanningLogicManager {
     async setWeek(date: Moment) {
         this.currentWeek = date.clone();
 
-        console.log("ExperimentalPlanningLogicManager: setWeek(): date: ", date);
-
         for (let weekIndex of [1, 2, 0]) {
-            console.log("ExperimentalPlanningLogicManager: setWeek(): weekIndex: ", weekIndex);
             await this.refreshWeek(weekIndex);
         }
     }
 
     resetToToday(): void {
-        this.currentWeek = moment();
-        // this.currentWeek = moment(new Date(2022, 7, 25, 12));
+        // this.currentWeek = moment();
+        this.currentWeek = moment(new Date(2022, 7, 25, 12));
     }
 
     getReservations(weekIndex = 1): { [key: number]: Reservation[] } {

@@ -161,6 +161,16 @@ export default {
     // Close selected reservation when on mobile
     emitter.on("closeSelectedReservation", () => {
       this.selectedReservation = null;
+    }); 
+
+    emitter.on('hardResetPlaning', async () => {
+      this.isLoading = true; // Display spinner
+
+      this.$store.dispatch("setLastCacheRefresh", -1);
+      await this.planningManager.refreshWeek();
+      // this.$store.dispatch("setCurrentDay", await this.planningManager.getCurrentDay());
+
+      this.isLoading = false; // Hide spinner
     });
   },
   methods: {
