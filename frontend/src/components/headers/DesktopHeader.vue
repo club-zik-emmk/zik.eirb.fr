@@ -2,12 +2,6 @@
   <div class="w-full flex flex-row justify-between px-20 h-[8vh] bg-[#1F1F1F]">
 
     <div class="h-full flex items-center">
-      <!-- Logo Zik -->
-      <div>
-        
-      </div>
-
-
       <!-- Nav bar -->
       <nav class="py-7 flex justify-evenly items-center">
 
@@ -94,6 +88,11 @@ export default {
     isUserMember() {
       return this.$store.state.user.member;
     },
+    logoUrl() {
+      return {
+        '--logo-url': `url('/img/logo.svg')`
+      };
+    }
   },
   methods: {
     logout() {
@@ -107,5 +106,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>
