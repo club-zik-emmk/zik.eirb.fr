@@ -94,7 +94,7 @@ export default {
         return;
       }
 
-      if (this.isUserSelected) {
+      if (!this.isUserSelected) {
         axiosInstance.post("/api/v1/users", this.selectedUser.data).then(response => {
           this.refreshUsers();
           this.resetSelection();
