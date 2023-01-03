@@ -1,7 +1,7 @@
 <template>
   <div
       class="flex flex-col ml-5"
-      style="z-index: 1;"
+      style="z-index: 100;"
       :class="dynamicClassName">
 
     <div
