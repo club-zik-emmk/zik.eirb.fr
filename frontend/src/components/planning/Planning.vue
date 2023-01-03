@@ -163,14 +163,13 @@ export default {
       this.selectedReservation = null;
     }); 
 
-    emitter.on('hardResetPlaning', async () => {
-      this.isLoading = true; // Display spinner
+    emitter.on('onReservationDeletionClick', async (id) => {
+      this.planningManager.deleteReservationById(id);
+      this.$store.dispatch("setCurrentDay", await this.planningManager.getCurrentDay());
+    });
 
-      this.$store.dispatch("setLastCacheRefresh", -1);
-      await this.planningManager.refreshWeek();
-      // this.$store.dispatch("setCurrentDay", await this.planningManager.getCurrentDay());
-
-      this.isLoading = false; // Hide spinner
+    emitter.on('onReservationDeletionError', reservation => {
+      this.planningManager.addReservation(reservation);
     });
   },
   methods: {
@@ -187,7 +186,6 @@ export default {
       this.$store.dispatch("openWeekList");
     },
     handleReservationSelection(reservation) {
-      console.log(reservation);
       this.selectedReservation = reservation;
     },
   },
@@ -211,7 +209,6 @@ export default {
       return document.documentElement.clientWidth < 768;
     },
     currentDay() {
-      console.log(`Planning.vue: currentDay(): `, this.$store.state.currentDay);
       return this.$store.state.currentDay;
     },
     isUserMember() {

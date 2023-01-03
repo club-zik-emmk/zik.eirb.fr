@@ -249,6 +249,20 @@ class ExperimentalPlanningLogicManager {
     getCurrentWeek(): Moment {
         return this.currentWeek;
     }
+
+    deleteReservationById(id: number): void {
+        const dayIndex = this.currentWeek.days();
+
+        this.allReservations = this.allReservations.filter((reservation) => reservation.id !== id);
+        this.reservationWindow[1][dayIndex] = this.reservationWindow[1][dayIndex].filter((reservation) => reservation.id !== id);
+    }
+
+    addReservation(reservation: Reservation): void {
+        const dayIndex = this.currentWeek.days();
+
+        this.allReservations.push(reservation);
+        this.reservationWindow[1][dayIndex].push(reservation);
+    }
 }
 
 const experimentalPlanningLogicManager = new ExperimentalPlanningLogicManager();

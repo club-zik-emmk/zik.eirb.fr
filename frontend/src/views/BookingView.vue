@@ -223,11 +223,6 @@ export default {
       // Check that the span of the reservation is less or equal to 3 hours
       const isSpanValid = reservationEndDate.diff(reservationStartDate, "hours") <= 3;
 
-      console.log('isDuringDisponibility', isDuringDisponibility)
-      console.log('isDuringReservation', isDuringReservation)
-      console.log('isSpanValid', isSpanValid)
-      console.log('this.isUserAdmin', this.isUserAdmin)
-
       return (
         isDuringDisponibility
         && !isDuringReservation

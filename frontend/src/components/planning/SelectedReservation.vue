@@ -61,11 +61,20 @@ export default {
       emitter.emit("closeSelectedReservation");
     },
     deleteReservation() {
+      // Cache reservation
+      this.$store.dispatch("pushReservationStack", this.reservation);
+      emitter.emit("onReservationDeletionClick", this.reservation.id);
+
       axiosInstance.delete('api/v1/reservations/' + this.reservation.id)
         .then(() => {
           emitter.emit("closeSelectedReservation");
-          emitter.emit("hardResetPlaning");
+          
+          // Remove reservation from store
+          this.$store.dispatch("removeReservationById", this.reservation.id);
         })
+        .catch((error) => {
+          emitter.emit("onReservationDeletionError", this.reservation);
+        });
     }
   },
   computed: {

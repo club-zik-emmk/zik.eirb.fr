@@ -1,6 +1,7 @@
 import {createStore} from "vuex";
 import createPersistedState from "vuex-persistedstate";
 import SecureLS from "secure-ls";
+import { Disponibility, Reservation } from "./types";
 
 const ls = new SecureLS({
     encodingType: "aes",
@@ -8,8 +9,25 @@ const ls = new SecureLS({
     encryptionSecret: "d3f4ultS3cr3t",
 });
 
+type State = {
+    isWeekListOpen: boolean,
+    currentDay: {
+        disponibilities: Disponibility[],
+        reservations: Reservation[],
+        dayIndex: number,
+        dayName: string,
+    },
+    user: {
+        id: string,
+        admin: boolean,
+        member: boolean
+    },
+    lastCacheRefresh: number,
+    reservationStack: Reservation[],
+};
+
 const store = createStore({
-    state() {
+    state(): State {
         return {
             isWeekListOpen: false,
             currentDay: {
@@ -24,6 +42,7 @@ const store = createStore({
                 member: false
             },
             lastCacheRefresh: -1,
+            reservationStack: [],
         }
     },
     mutations: {
@@ -41,6 +60,14 @@ const store = createStore({
         },
         setLastCacheRefresh(state, lastCacheRefresh) {
             state.lastCacheRefresh = lastCacheRefresh;
+        },
+        pushReservationStack(state, reservation: Reservation) {
+            state.reservationStack.push(reservation);
+        },
+        removeReservationById(state, id: number) {
+            state.reservationStack = state.reservationStack.filter((reservation) => {
+                return reservation.id !== id;
+            });
         }
     },
     actions: {
@@ -79,6 +106,12 @@ const store = createStore({
         },
         setLastCacheRefresh({commit}, lastCacheRefresh) {
             commit("setLastCacheRefresh", lastCacheRefresh);
+        },
+        pushReservationStack({commit}, reservation: Reservation) {
+            commit("pushReservationStack", reservation);
+        },
+        removeReservationById({commit}, id: number) {
+            commit("removeReservationById", id);
         }
     },
     plugins: [createPersistedState({

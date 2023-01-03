@@ -81,17 +81,6 @@ export default {
       // How many times the difference between the parent height and the reservation start goes over a round hour
       const roundHourStart = Math.floor(start / 4);
 
-      if (this.reservation.id === 44) {
-        const localResa = this.reservation;
-        console.log({localResa});
-        console.log({
-          start,
-          height,
-          roundHour,
-          roundHourStart
-        });
-      }
-
       return {
         '--start': start,
         '--round-hour-start': roundHourStart,
