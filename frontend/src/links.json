@@ -19,15 +19,6 @@
       "path": "/member/events"
     }
   ],
-  "events": [
-    {
-      "name": "Concert de Noël",
-      "link": "https://www.google.com/url?q=https://forms.gle/2EaGJWyDPaRN71jM9&sa=D&source=docs&ust=1668441731005444&usg=AOvVaw1jhIGeY3vHjFZa7-Cilz43"
-    },
-    {
-      "name": "Truc",
-      "link": "#"
-    }
-  ],
+  "events": [],
   "cotisation": "https://lydia-app.com/collect/22461-cotisation-zik/fr"
 }
