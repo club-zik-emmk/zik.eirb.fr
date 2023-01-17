@@ -52,16 +52,18 @@
       </div>
 
 
+      <span class="h-10 mt-5 mb-2 mx-2" v-show="!isAdminReservation">{{ this.selectedUsersText }}</span>
+
       <!-- User list and search query -->
       <div class="w-full flex justify-center">
-        <div class="w-full h-96 bg-[#2F2F2F]  rounded-lg overflow-hidden my-10" v-if="!isAdminReservation">
+        <div class="w-full h-72 bg-[#2F2F2F]  rounded-lg overflow-hidden mb-10" v-if="!isAdminReservation">
           <input type="text" class="w-full h-12 outline-none text-black px-5" v-model="searchQuery"
             @input="handleSearch" />
 
           <div class="flex flex-col overflow-y-auto shrink-0 h-[90%]">
             <div v-for="user in users"
-              class="px-2 py-1 hover:bg-[#404040] duration-300 hover:cursor-pointer h-12 shrink-0 flex items-center"
-              :class="selectedUsers.includes(user) ? 'bg-[#404040]' : ''" @click="handleUserClick(user)">
+              class="px-2 py-1 duration-300 hover:cursor-pointer h-12 shrink-0 flex items-center"
+              :class="selectedUsers.includes(user) ? 'bg-[#ffcc03] hover:bg-[#846500]' : 'hover:bg-[#404040]'" @click="handleUserClick(user)">
               {{ user }}
             </div>
           </div>
@@ -173,6 +175,9 @@ export default {
     }
   },
   computed: {
+    selectedUsersText() {
+      return this.selectedUsers.join(", ");
+    },
     isUserAdmin() {
       return this.$store.state.user.admin;
     },
