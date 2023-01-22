@@ -195,13 +195,14 @@ export default {
 
       console.log('disponibility', disponibilities[0]);
 
+      const lastDisponibility = disponibilities[disponibilities.length - 1];
+
       // Create the Moment objects
       const reservationStartDate = moment();
       
-      // Set the date from disponibilities[0].startDate
-      reservationStartDate.year(disponibilities[0].startDate.year);
-      reservationStartDate.month(disponibilities[0].startDate.month);
-      reservationStartDate.date(disponibilities[0].startDate.date);
+      reservationStartDate.year(lastDisponibility.startDate.year);
+      reservationStartDate.month(lastDisponibility.startDate.month);
+      reservationStartDate.date(lastDisponibility.startDate.date);
 
       // Set hours and minutes
       reservationStartDate.hour(this.startTime.hours);
@@ -211,10 +212,9 @@ export default {
       // Create the Moment objects
       const reservationEndDate = moment();
 
-      // Set the date from disponibilities[0].startDate
-      reservationEndDate.year(disponibilities[0].startDate.year);
-      reservationEndDate.month(disponibilities[0].startDate.month);
-      reservationEndDate.date(disponibilities[0].startDate.date);
+      reservationEndDate.year(lastDisponibility.startDate.year);
+      reservationEndDate.month(lastDisponibility.startDate.month);
+      reservationEndDate.date(lastDisponibility.startDate.date);
 
       reservationEndDate.hour(this.endTime.hours);
       reservationEndDate.minute(this.endTime.minutes);
