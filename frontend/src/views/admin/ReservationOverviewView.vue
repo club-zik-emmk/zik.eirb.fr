@@ -183,6 +183,11 @@ export default {
       this.refreshWeekString(this.planningManager.getCurrentWeek());
     },
     refreshWeekString(momentObject) {
+      // If today is Sunday, we need to get the previous week
+      if (momentObject.day() === 0) {
+        momentObject = momentObject.clone().subtract(1, 'week');
+      }
+
       // Get the first day of the week (Monday)
       const firstDay = momentObject.clone().startOf('week').add(1, 'day');
 

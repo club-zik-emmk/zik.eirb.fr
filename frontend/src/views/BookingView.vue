@@ -225,6 +225,9 @@ export default {
           && (reservationEndDate.isBetween(startDate, endDate) || reservationEndDate.isSameOrAfter(endDate));
       });
 
+      console.log('isDuringDisponibility', isDuringDisponibility);
+      console.log('isDuringReservation', isDuringReservation);
+
       // Check that the span of the reservation is less or equal to 3 hours
       const isSpanValid = reservationEndDate.diff(reservationStartDate, "hours") <= 3;
 
