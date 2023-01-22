@@ -221,6 +221,21 @@ export default {
         const startDate = moment(reservation.startDate);
         const endDate = moment(reservation.endDate);
 
+        if (reservation.id === 117) {
+          console.log('reservationStartDate', reservationStartDate);
+          console.log('reservationEndDate', reservationEndDate);
+          console.log('startDate', startDate);
+          console.log('endDate', endDate);
+
+          console.log(reservationStartDate.isBetween(startDate, endDate));
+          console.log(reservationStartDate.isSameOrBefore(startDate));
+          console.log(reservationEndDate.isBetween(startDate, endDate));
+          console.log(reservationEndDate.isSameOrAfter(endDate));
+
+          console.log(reservationStartDate.isBetween(startDate, endDate) || reservationStartDate.isSameOrBefore(startDate));
+          console.log(reservationEndDate.isBetween(startDate, endDate) || reservationEndDate.isSameOrAfter(endDate));
+        } 
+
         return (reservationStartDate.isBetween(startDate, endDate) || reservationStartDate.isSameOrBefore(startDate))
           && (reservationEndDate.isBetween(startDate, endDate) || reservationEndDate.isSameOrAfter(endDate));
       });
