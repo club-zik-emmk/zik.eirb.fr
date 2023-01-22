@@ -75,6 +75,7 @@ export default {
     if (this.$route.path !== '/auth') {
       axiosInstance.get('/api/v1/me').catch(() => {
         this.$store.dispatch("resetUser");
+        this.$router.push("/auth");
       });
     }
   },
