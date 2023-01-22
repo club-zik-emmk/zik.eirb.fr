@@ -193,19 +193,15 @@ export default {
         return false;
       }
 
+      // Serialized date
       const serialized = this.currentDay.serialized;
       console.log('serialized', serialized);
 
-      console.log('disponibility', disponibilities[0]);
-
-      const lastDisponibility = disponibilities[disponibilities.length - 1];
+      // Deserialize the serialized date
+      const deserialized = moment(serialized, "YYYY-MM-DD");
 
       // Create the Moment objects
-      const reservationStartDate = moment();
-      
-      reservationStartDate.year(lastDisponibility.startDate.year);
-      reservationStartDate.month(lastDisponibility.startDate.month);
-      reservationStartDate.date(lastDisponibility.startDate.date);
+      const reservationStartDate = moment(deserialized.clone());
 
       // Set hours and minutes
       reservationStartDate.hour(this.startTime.hours);
@@ -213,11 +209,7 @@ export default {
       reservationStartDate.second(0);
 
       // Create the Moment objects
-      const reservationEndDate = moment();
-
-      reservationEndDate.year(lastDisponibility.startDate.year);
-      reservationEndDate.month(lastDisponibility.startDate.month);
-      reservationEndDate.date(lastDisponibility.startDate.date);
+      const reservationEndDate = moment(deserialized.clone());
 
       reservationEndDate.hour(this.endTime.hours);
       reservationEndDate.minute(this.endTime.minutes);
