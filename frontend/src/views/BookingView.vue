@@ -193,6 +193,9 @@ export default {
         return false;
       }
 
+      const serialized = this.currentDay.serialized;
+      console.log('serialized', serialized);
+
       console.log('disponibility', disponibilities[0]);
 
       const lastDisponibility = disponibilities[disponibilities.length - 1];

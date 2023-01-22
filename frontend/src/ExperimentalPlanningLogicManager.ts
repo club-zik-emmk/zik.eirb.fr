@@ -145,7 +145,7 @@ class ExperimentalPlanningLogicManager {
     /**
      * Get the disponibilities and reservations for the current day
      */
-    getCurrentDay(): Day {
+    getCurrentDay(): Day & { serialized: string } {
         const dayIndex = this.currentWeek.days();
 
         return {
@@ -154,6 +154,7 @@ class ExperimentalPlanningLogicManager {
             dayIndex: this.currentWeek.date(),
             dayName: `${dayIndexToDayName[dayIndex]} ${this.currentWeek.date()} ${monthIndexToMonthName[this.currentWeek.month()]}`,
             isoString: this.currentWeek.toISOString(),
+            serialized: this.currentWeek.format("YYYY-MM-DD"),
         };
     }
 
