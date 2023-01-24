@@ -71,8 +71,9 @@ export default {
     }
   },
   created() {
-    console.log(this.$route.name);
-    
+    const route = this.$route;
+    console.log({route});
+
     // If route is different than /auth, we check if user is authenticated
     if (this.$route.path !== '/auth' && this.$route.path !== '/#/auth') {
       axiosInstance.get('/api/v1/me').then(() => {
