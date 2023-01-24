@@ -24,6 +24,7 @@ type State = {
     },
     lastCacheRefresh: number,
     reservationStack: Reservation[],
+    route: string,
 };
 
 const store = createStore({
@@ -43,6 +44,7 @@ const store = createStore({
             },
             lastCacheRefresh: -1,
             reservationStack: [],
+            route: "",
         }
     },
     mutations: {
@@ -68,6 +70,9 @@ const store = createStore({
             state.reservationStack = state.reservationStack.filter((reservation) => {
                 return reservation.id !== id;
             });
+        },
+        setRoute(state, route: string) {
+            state.route = route;
         }
     },
     actions: {
@@ -112,6 +117,9 @@ const store = createStore({
         },
         removeReservationById({commit}, id: number) {
             commit("removeReservationById", id);
+        },
+        setRoute({commit}, route: string) {
+            commit("setRoute", route);
         }
     },
     plugins: [createPersistedState({
