@@ -123,8 +123,8 @@ export default {
       }
 
       axiosInstance.delete(`/api/v1/users/${this.selectedUser.data.id}`).then(response => {
-        this.refreshUsers();
         this.resetSelection();
+        this.refreshUsers();
       });
     },
     resetSelection() {

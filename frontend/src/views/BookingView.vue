@@ -195,7 +195,6 @@ export default {
 
       // Serialized date
       const serialized = this.currentDay.serialized;
-      console.log('serialized', serialized);
 
       // Deserialize the serialized date
       const deserialized = moment(serialized, "YYYY-MM-DD");
@@ -231,27 +230,9 @@ export default {
         const startDate = moment(reservation.startDate);
         const endDate = moment(reservation.endDate);
 
-        if (reservation.id === 117) {
-          console.log('reservationStartDate', reservationStartDate);
-          console.log('reservationEndDate', reservationEndDate);
-          console.log('startDate', startDate);
-          console.log('endDate', endDate);
-
-          console.log(reservationStartDate.isBetween(startDate, endDate));
-          console.log(reservationStartDate.isSameOrBefore(startDate));
-          console.log(reservationEndDate.isBetween(startDate, endDate));
-          console.log(reservationEndDate.isSameOrAfter(endDate));
-
-          console.log(reservationStartDate.isBetween(startDate, endDate) || reservationStartDate.isSameOrBefore(startDate));
-          console.log(reservationEndDate.isBetween(startDate, endDate) || reservationEndDate.isSameOrAfter(endDate));
-        } 
-
         return (reservationStartDate.isBetween(startDate, endDate) || reservationStartDate.isSameOrBefore(startDate))
           && (reservationEndDate.isBetween(startDate, endDate) || reservationEndDate.isSameOrAfter(endDate));
       });
-
-      console.log('isDuringDisponibility', isDuringDisponibility);
-      console.log('isDuringReservation', isDuringReservation);
 
       // Check that the span of the reservation is less or equal to 3 hours
       const isSpanValid = reservationEndDate.diff(reservationStartDate, "hours") <= 3;
