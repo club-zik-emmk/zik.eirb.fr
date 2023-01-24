@@ -87,7 +87,6 @@ const router: Router = createRouter({
 
 router.beforeEach((to, from, next) => {
     store.dispatch("setRoute", to.name);
-    console.log("Route changed to ", to.name);
 
     if (to.meta?.requiresAuth && store.state.user.id === "") {
         next({name: "Authentification"});

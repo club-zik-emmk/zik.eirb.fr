@@ -70,7 +70,7 @@ export default {
   },
   created() {
     // If route is different than /auth, we check if user is authenticated
-    if (this.$route.path !== '/auth' || this.$route.path !== '/#/auth') {
+    if (this.routeName !== 'Authentification') {
       axiosInstance.get('/api/v1/me').catch(() => {
         this.$store.dispatch("resetUser");
         this.$router.push("/auth");
@@ -131,6 +131,9 @@ export default {
     },
   },
   computed: {
+    routeName() {
+      return this.$store.state.route;
+    },
     menuItemClass() {
       return {
         'py-5 pl-5 bg-[#1F1F1F] w-full': true,

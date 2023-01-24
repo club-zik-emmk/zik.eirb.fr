@@ -71,11 +71,9 @@ export default {
     }
   },
   created() {
-    const route = this.$route;
-    console.log({route});
 
     // If route is different than /auth, we check if user is authenticated
-    if (this.$route.path !== '/auth' && this.$route.path !== '/#/auth') {
+    if (this.routeName !== 'Authentification') {
       axiosInstance.get('/api/v1/me').then(() => {
         console.log("Why the fuck is this accepted");
       }).catch(() => {
@@ -99,6 +97,9 @@ export default {
       return {
         '--logo-url': `url('/img/logo.svg')`
       };
+    },
+    routeName() {
+      return this.$store.state.route;
     }
   },
   methods: {
