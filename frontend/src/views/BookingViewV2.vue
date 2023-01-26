@@ -3,7 +3,7 @@
     <div id="day"
       class="w-full lg:w-1/3 h-full overflow-y-auto px-3 lg:px-12 lg:py-6 flex flex-col justify-between py-7 bg-[#1F1F1F] lg:rounded-xl">
       <div class="w-full flex flex-col">
-        <router-link to="/admin/reservations-overview"
+        <router-link to="/planning"
           class="hover:bg-[#404040] bg-[#2F2F2F] duration-300 rounded-lg w-32 lg:w-42 h-12 flex flex-row justify-evenly items-center">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
             stroke="currentColor" class="w-6 h-6">
@@ -93,12 +93,12 @@ export default {
   data() {
     return {
       startTime: {
-        hours: new Date(0, 0, 0, this.$store.state.bookingDay.hour+5).getHours(),
+        hours: new Date(0, 0, 0, this.$store.state.bookingDay.hour+6).getHours(),
         minutes: new Date(0, 0, 0, 0, 0).getMinutes(),
       },
       endTime: {
-        hours: new Date(0, 0, 0, this.$store.state.bookingDay.hour+6).getHours(),
-        minutes: new Date(0, 0, 0, 0, 15).getMinutes(),
+        hours: new Date(0, 0, 0, this.$store.state.bookingDay.hour+7).getHours(),
+        minutes: new Date(0, 0, 0, 0, 0).getMinutes(),
       },
       title: "",
       searchQuery: "",
@@ -121,10 +121,8 @@ export default {
         return;
       }
 
-      let day = this.$store.state.bookingDay.day;
-      // first day of the week of the current day
-      day = moment(day).startOf("isoWeek").format("YYYY-MM-DD");
-      
+      const day = moment(this.currentDay.isoString).format("YYYY-MM-DD");
+
 
       // Format to "YYYY-MM-DD HH:mm:ss"
       const formattedStartTime = `${day} ${this.startTime.hours.toString().padStart(2, "0")}:${this.startTime.minutes.toString().padStart(2, "0")}:00`;
@@ -138,7 +136,7 @@ export default {
           ownerId: "ADMIN",
           users: []
         }).then(() => {
-          this.$router.push("/admin/reservations-overview");
+          this.$router.push("/planning");
         }).catch(console.error);
       } else {
         axiosInstance.post("/api/v1/reservations", {
@@ -148,7 +146,7 @@ export default {
           ownerId: this.$store.state.user.id,
           users: this.selectedUsers
         }).then(() => {
-          this.$router.push("/admin/reservations-overview");
+          this.$router.push("/planning");
         }).catch(console.error);
       }
     },
