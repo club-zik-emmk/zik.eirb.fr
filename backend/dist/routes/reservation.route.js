@@ -10,5 +10,6 @@ const router = express_1.default.Router();
 router.get("/", reservation_controller_1.default.listAllReservations);
 router.get("/:id", reservation_controller_1.default.getReservationById);
 router.post("/", (0, permission_middleware_1.isConnected)(), (0, permission_middleware_1.isMember)(), reservation_controller_1.default.createOrUpdateReservation);
+router.post("/admin", (0, permission_middleware_1.isConnected)(), (0, permission_middleware_1.isAdmin)(), reservation_controller_1.default.createAdminReservation);
 router.delete("/:id", (0, permission_middleware_1.isConnected)(), (0, permission_middleware_1.isMember)(), reservation_controller_1.default.deleteReservationById);
 exports.default = router;

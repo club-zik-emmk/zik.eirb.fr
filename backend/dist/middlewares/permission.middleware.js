@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.isMember = exports.isAdmin = exports.isConnected = void 0;
 const models_1 = require("../models");
 const isConnected = () => async (req, res, next) => {
-    // @ts-ignore
     if (!req.session.user) {
         res.status(401).json({
             success: false,
@@ -41,7 +40,6 @@ const isAdmin = () => async (req, res, next) => {
 exports.isAdmin = isAdmin;
 const isMember = () => async (req, res, next) => {
     // Session type redefines the session object to include the user property
-    const session = req.session;
     if (!req.session.user) {
         res.status(401).json({
             success: false,
