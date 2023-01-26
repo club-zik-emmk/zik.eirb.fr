@@ -17,6 +17,12 @@ type State = {
         dayIndex: number,
         dayName: string,
     },
+    clickedDay: {
+        disponibilities: Disponibility[],
+        reservations: Reservation[],
+        dayIndex: number,
+        dayName: string,
+    },
     user: {
         id: string,
         admin: boolean,
@@ -25,7 +31,7 @@ type State = {
     lastCacheRefresh: number,
     reservationStack: Reservation[],
     route: string,
-    bookingDay: object
+    bookingDay: any
 };
 
 const store = createStore({
@@ -59,6 +65,9 @@ const store = createStore({
         setCurrentDay(state, day) {
             state.currentDay = day;
         },
+        setClickedDay(state, day) {
+            state.clickedDay = day;
+        },
         setUser(state, user) {
             state.user = user;
         },
@@ -90,6 +99,9 @@ const store = createStore({
         setCurrentDay({commit}, day) {
             commit("setCurrentDay", day);
         },
+        setClickedDay({commit}, day) {
+            commit("setClickedDay", day);
+        },
         resetCurrentDay({commit}) {
             commit("setCurrentDay", {
                 disponibilities: [],
@@ -98,8 +110,19 @@ const store = createStore({
                 dayName: "",
             });
         },
+        resetClickedDay({commit}) {
+            commit("setClickedDay", {
+                disponibilities: [],
+                reservations: [],
+                dayIndex: -1,
+                dayName: "",
+            });
+        },
         isCurrentDaySet({state}) {
             return state.currentDay.dayIndex !== -1;
+        },
+        isClickedDaySet({state}) {
+            return state.clickedDay.dayIndex !== -1;
         },
         isUserSet({state}) {
             return state.user.id !== '';

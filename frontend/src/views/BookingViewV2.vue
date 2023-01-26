@@ -15,7 +15,7 @@
 
         <div class="w-full flex flex-col items-center justify-center my-7">
           <div class="uppercase font-bold text-4xl">Réserver</div>
-          <div class="text-xl">{{clickedDay}}</div>
+          <div class="text-xl">{{ clickedDay }}</div>
         </div>
 
         <div class="flex flex-col mb-7">
@@ -63,7 +63,8 @@
           <div class="flex flex-col overflow-y-auto shrink-0 h-[90%]">
             <div v-for="user in users"
               class="px-2 py-1 duration-300 hover:cursor-pointer h-12 shrink-0 flex items-center"
-              :class="selectedUsers.includes(user) ? 'bg-[#ffcc03] hover:bg-[#846500]' : 'hover:bg-[#404040]'" @click="handleUserClick(user)">
+              :class="selectedUsers.includes(user) ? 'bg-[#ffcc03] hover:bg-[#846500]' : 'hover:bg-[#404040]'"
+              @click="handleUserClick(user)">
               {{ user }}
             </div>
           </div>
@@ -84,7 +85,7 @@
 </template>
 
 <script>
-import moment, {Moment} from "moment";
+import moment, { Moment } from "moment";
 
 import axiosInstance from "@/axiosInstance";
 
@@ -93,11 +94,11 @@ export default {
   data() {
     return {
       startTime: {
-        hours: new Date(0, 0, 0, this.$store.state.bookingDay.hour+6).getHours(),
+        hours: new Date(0, 0, 0, this.$store.state.bookingDay.hour + 6).getHours(),
         minutes: new Date(0, 0, 0, 0, 0).getMinutes(),
       },
       endTime: {
-        hours: new Date(0, 0, 0, this.$store.state.bookingDay.hour+7).getHours(),
+        hours: new Date(0, 0, 0, this.$store.state.bookingDay.hour + 7).getHours(),
         minutes: new Date(0, 0, 0, 0, 0).getMinutes(),
       },
       title: "",
@@ -121,7 +122,8 @@ export default {
         return;
       }
 
-      const day = moment(this.currentDay.isoString).format("YYYY-MM-DD");
+      const day = this.selectedDay();
+      console.log(day);
 
 
       // Format to "YYYY-MM-DD HH:mm:ss"
@@ -175,42 +177,48 @@ export default {
         this.usersBackup = response.data.data.map(u => u.id).filter(u => u !== this.$store.state.user.id && u !== "ADMIN");
       });
     },
-  days(index) {
+    days(index) {
       return [
-        "Dimanche",
         "Lundi",
         "Mardi",
         "Mercredi",
         "Jeudi",
         "Vendredi",
         "Samedi",
+        "Dimanche",
       ][index];
     },
-  
-  monthes(index) {
-    return [
-      "Janvier",
-      "Fevrier",
-      "Mars",
-      "Avril",
-      "Mai",
-      "Juin",
-      "Juillet",
-      "Août",
-      "Septembre",
-      "Octobre",
-      "Novembre",
-      "Decembre"
-    ][index-1];
-  }
-  },
-  computed: {
-    
 
-    clickedDay() {
+    monthes(index) {
+      return [
+        "Janvier",
+        "Fevrier",
+        "Mars",
+        "Avril",
+        "Mai",
+        "Juin",
+        "Juillet",
+        "Août",
+        "Septembre",
+        "Octobre",
+        "Novembre",
+        "Decembre"
+      ][index - 1];
+    },
+
+    selectedDay() {
       let week = this.$store.state.bookingDay.week;
       let dayIndex = this.$store.state.bookingDay.day;
       let mom = moment(week).add(dayIndex, "days").format("YYYY-MM-DD");
+      return mom;
+    }
+  },
+  computed: {
+
+
+    clickedDay() {
+      let dayIndex = this.$store.state.bookingDay.day;
+      let mom = this.selectedDay();
       console.log(mom.toString());
       // create string "Mercredi 25 Janvier 2023"
       let day = mom.toString().split("-")[2];
@@ -229,7 +237,7 @@ export default {
       return this.$store.state.user.admin;
     },
     currentDay() {
-      return this.$store.state.currentDay;
+      return this.$store.state.clickedDay;
     },
     reservationIsAvailable() {
       const disponibilities = this.currentDay.disponibilities || [];

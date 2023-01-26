@@ -104,7 +104,7 @@
             <span>{{ this.days[dayIndex - 1] }}</span>
           </div>
 
-          <div v-for="hour in 16" :key="hour" class="h-[5.882352941%] border-b-2 border-black hover:bg-[#595959]" @click="toBookingVue(this.planningManager.getCurrentWeek(), dayIndex, hour)"></div>
+          <div v-for="hour in 16" :key="hour" class="h-[5.882352941%] border-b-2 border-black hover:bg-[#595959]" @click="toBookingVue(this.planningManager.getCurrentWeek(), dayIndex-1, hour)"></div>
 
           <div v-for="element in this.reservations[dayIndex]" :key="element.startDate"
             :style="getReservationStyle(element)"
@@ -139,13 +139,13 @@ export default {
     }
   },
   async created() {
-    this.$store.dispatch('resetCurrentDay');
+    this.$store.dispatch('resetClickedDay');
     this.$store.dispatch('setLastCacheRefresh', -1);
 
     this.planningManager.resetToToday();
     await this.planningManager.refreshWeek();
 
-    this.$store.dispatch("setCurrentDay", await this.planningManager.getCurrentDay());
+    this.$store.dispatch("setClickedDay", await this.planningManager.getClickedDay());
 
     // Refresh the week string
     this.refreshWeekString(this.planningManager.getCurrentWeek());
@@ -191,14 +191,14 @@ export default {
     },
     async handlePreviousWeekClick() {
       await this.planningManager.getPreviousWeek();
-      this.$store.dispatch("setCurrentDay", this.planningManager.getCurrentDay());
+      this.$store.dispatch("setClickedDay", this.planningManager.getClickedDay());
 
       // Refresh the week string
-      this.refreshWeekString(this.planningManager.getCurrentWeek());
+      this.refreshWeekString(this.planningManager.getClickedDay());
     },
     async handleNextWeekClick() {
       await this.planningManager.getNextWeek();
-      this.$store.dispatch("setCurrentDay", this.planningManager.getCurrentDay());
+      this.$store.dispatch("setClickedDay", this.planningManager.getClickedDay());
 
       // Refresh the week string
       this.refreshWeekString(this.planningManager.getCurrentWeek());
@@ -256,6 +256,10 @@ export default {
       window.location.reload();
     },
     toBookingVue(week, day, hour) {
+      console.log(day);
+      console.log(week);
+      week.startOf('week').add(1, 'day');
+      console.log(week);
       this.$store.dispatch("setBookingDay", {
         week: week,
         day: day,

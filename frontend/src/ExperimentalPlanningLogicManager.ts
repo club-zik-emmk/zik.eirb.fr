@@ -147,7 +147,7 @@ class ExperimentalPlanningLogicManager {
      */
     getCurrentDay(): Day & { serialized: string } {
         const dayIndex = this.currentWeek.days();
-
+        
         return {
             disponibilities: this.disponibilitiesWindow[1][dayIndex],
             reservations: this.reservationWindow[1][dayIndex],
@@ -156,6 +156,23 @@ class ExperimentalPlanningLogicManager {
             isoString: this.currentWeek.toISOString(),
             serialized: this.currentWeek.format("YYYY-MM-DD"),
         };
+    }
+
+    /**
+     * Get the disponibilities and reservations for the clicked day
+     * 
+     */
+    getClickedDay(): Day & { serialized: string } {
+        const dayIndex = store.state.bookingDay.day+1;
+        return {
+            disponibilities: this.disponibilitiesWindow[1][dayIndex],
+            reservations: this.reservationWindow[1][dayIndex],
+            dayIndex: dayIndex,
+            dayName: `${dayIndexToDayName[dayIndex]} ${this.currentWeek.date()} ${monthIndexToMonthName[this.currentWeek.month()]}`,
+            isoString: this.currentWeek.toISOString(),
+            serialized: this.currentWeek.format("YYYY-MM-DD"),
+        };
+
     }
 
     /**
