@@ -23,7 +23,14 @@ const routes: Route[] = [
     {
         path: "/planning",
         name: "Planning",
-        component: () => import("@/views/PlanningView.vue"),
+        component: () => {
+            console.log(window.innerWidth);
+            if (window.innerWidth < 768) {  // mobile
+                return import("@/views/PlanningView.vue");
+            } else {
+                return import("@/views/admin/ReservationOverviewView.vue");
+            }
+        },
         meta: {
             requiresAuth: true,
         }
@@ -32,6 +39,14 @@ const routes: Route[] = [
         path: "/book",
         name: "Réserver",
         component: () => import("@/views/BookingView.vue"),
+        meta: {
+            requiresAuth: true,
+        }
+    },
+    {
+        path: "/book2",
+        name: "Réserver2",
+        component: () => import("@/views/BookingViewV2.vue"),
         meta: {
             requiresAuth: true,
         }

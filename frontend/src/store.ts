@@ -25,6 +25,7 @@ type State = {
     lastCacheRefresh: number,
     reservationStack: Reservation[],
     route: string,
+    bookingDay: object
 };
 
 const store = createStore({
@@ -45,6 +46,7 @@ const store = createStore({
             lastCacheRefresh: -1,
             reservationStack: [],
             route: "",
+            bookingDay: {}
         }
     },
     mutations: {
@@ -73,6 +75,9 @@ const store = createStore({
         },
         setRoute(state, route: string) {
             state.route = route;
+        },
+        setBookingDay(state, bookingDay: object) {
+            state.bookingDay = bookingDay;
         }
     },
     actions: {
@@ -120,6 +125,9 @@ const store = createStore({
         },
         setRoute({commit}, route: string) {
             commit("setRoute", route);
+        },
+        setBookingDay({commit}, bookingDay: object) {
+            commit("setBookingDay", bookingDay);
         }
     },
     plugins: [createPersistedState({
