@@ -108,7 +108,7 @@
 
           <div v-for="element in this.reservations[dayIndex]" :key="element.startDate"
             :style="getReservationStyle(element)"
-            class="reservation w-full absolute bg-[#ee5253] duration-300 hover:cursor-pointer py-7 flex justify-evenly items-center"
+            class="reservation w-full absolute bg-[#ee5253] duration-300 hover:cursor-pointer py-2 flex justify-evenly items-center"
             :class="{
               'bg-[#ED916F] hover:bg-[#eab19d]': element.ownerId === 'ADMIN',
               'bg-[#AD86FF] hover:bg-[#cab2ff]': element.ownerId !== 'ADMIN'
@@ -185,7 +185,7 @@ export default {
       const startDate = reservation.startDate.clone().set({ hour: 8, minute: 0, second: 0, millisecond: 0 });
 
       return {
-        '--nb-quarter-hours': reservation.endDate.diff(reservation.startDate, 'minutes') / 15,
+        '--nb-quarter-hours': (reservation.endDate.diff(reservation.startDate, 'minutes') / 15),
         '--diff-start-day': reservation.startDate.diff(startDate, 'minutes') / 15,
       }
     },
@@ -194,7 +194,7 @@ export default {
       this.$store.dispatch("setClickedDay", this.planningManager.getClickedDay());
 
       // Refresh the week string
-      this.refreshWeekString(this.planningManager.getClickedDay());
+      this.refreshWeekString(this.planningManager.getCurrentWeek());
     },
     async handleNextWeekClick() {
       await this.planningManager.getNextWeek();
@@ -256,10 +256,7 @@ export default {
       window.location.reload();
     },
     toBookingVue(week, day, hour) {
-      console.log(day);
-      console.log(week);
       week.startOf('week').add(1, 'day');
-      console.log(week);
       this.$store.dispatch("setBookingDay", {
         week: week,
         day: day,
