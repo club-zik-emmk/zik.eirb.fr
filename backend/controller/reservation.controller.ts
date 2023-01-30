@@ -151,16 +151,13 @@ async function createAdminReservation(req: Request, res: Response) {
     // Find all reservations overlapping with the new one
     const overlappingReservations = await Reservation.findAll({
         where: {
-            startDate: {
-                [Op.or]: {
-                    [Op.lte]: req.body.startDate,
-                    [Op.between]: [req.body.startDate, req.body.endDate]
-                }
-            },
-            endDate: {
-                [Op.or]: {
-                    [Op.gte]: req.body.endDate,
-                    [Op.between]: [req.body.startDate, req.body.endDate]
+            [Op.and]: {
+                startDate: {
+                    [Op.lt]: req.body.endDate
+                },
+                endDate: {
+                    [Op.gt]: req.body.startDate
+
                 }
             }
         }
