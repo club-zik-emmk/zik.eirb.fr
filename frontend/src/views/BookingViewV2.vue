@@ -20,21 +20,21 @@
 
         <div class="flex flex-col mb-7">
           <div>
-            Heure de début
+            Heure de début (min: 8h00)
 
             <Datepicker v-model="startTime" timePicker minutesIncrement="15"
-              :maxTime="!this.isUserAdmin ? { hours: 22, minutes: 0 } : undefined"
-              :minTime="!this.isUserAdmin ? { hours: 8, minutes: 0 } : undefined" />
+              :maxTime="{ hours: 22, minutes: 30 }"
+              :minTime="{ hours: 8, minutes: 0 }" />
           </div>
         </div>
 
         <div class="flex flex-col mb-7">
           <div>
-            Heure de fin
+            Heure de fin (max: 22h30)
 
             <Datepicker v-model="endTime" timePicker minutesIncrement="15"
-              :maxTime="!this.isUserAdmin ? { hours: 22, minutes: 0 } : undefined"
-              :minTime="!this.isUserAdmin ? { hours: 8, minutes: 0 } : undefined" />
+              :maxTime="{ hours: 22, minutes: 30 }"
+              :minTime="{ hours: 8, minutes: 0 }" />
           </div>
         </div>
 
@@ -98,7 +98,7 @@ export default {
         minutes: new Date(0, 0, 0, 0, 0).getMinutes(),
       },
       endTime: {
-        hours: new Date(0, 0, 0, this.$store.state.bookingDay.hour + 7).getHours(),
+        hours: new Date(0, 0, 0, (this.$store.state.bookingDay.hour + 7 > 22) ? 22 : this.$store.state.bookingDay.hour + 7).getHours(),
         minutes: new Date(0, 0, 0, 0, 0).getMinutes(),
       },
       title: "",

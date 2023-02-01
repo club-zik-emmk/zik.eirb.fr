@@ -104,16 +104,14 @@
             <span>{{ this.days[dayIndex - 1] }}</span>
           </div>
 
-          <div v-for="hour in 16" :key="hour" class="h-[5.882352941%] border-b-2 border-black hover:bg-[#595959]" @click="toBookingVue(this.planningManager.getCurrentWeek(), dayIndex-1, hour)"></div>
+          <div v-for="hour in 16" :key="hour" class="h-[5.882352941%] border-b-2 border-black hover:bg-[#595959]"
+            @click="toBookingVue(this.planningManager.getCurrentWeek(), dayIndex - 1, hour)"></div>
 
           <div v-for="element in this.reservations[dayIndex]" :key="element.startDate"
             :style="getReservationStyle(element)"
             class="reservation w-full absolute bg-[#ee5253] duration-300 hover:cursor-pointer py-2 flex justify-evenly items-center"
-            :class="{
-              'bg-[#ED916F] hover:bg-[#eab19d]': element.ownerId === 'ADMIN',
-              'bg-[#AD86FF] hover:bg-[#cab2ff]': element.ownerId !== 'ADMIN'
-            }" @click="this.handleReservationClick(element)">
-            <span class="font-semibold" style="margin: 5px;">{{ element.title }}</span>
+            @click="this.handleReservationClick(element)">
+            <span class="font-semibold" style="margin: 5px; text-align: center;">{{ element.title }}</span>
           </div>
 
         </div>
@@ -181,12 +179,47 @@ export default {
   },
   methods: {
     getReservationStyle(reservation) {
+      const pastelColors = ["#8c7ae6"];
       // Moment.js clone startDate and get the day at 08:00am
       const startDate = reservation.startDate.clone().set({ hour: 8, minute: 0, second: 0, millisecond: 0 });
+      let colour = '#';
+      let colourHover = '#';
+      let str = reservation.ownerId;
+      if (str === 'ADMIN') {
+        colour = '#e17055';
+      }
+      else if (str === 'ngry') {
+        colour = '#981DDD';
+      }
+      else {
+
+        var hash = 0;
+        for (var i = 0; i < str.length; i++) {
+          hash = str.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        /* for (var i = 0; i < 3; i++) {
+          var value = (hash >> (i * 8)) & 0xFF;
+          colour += ('00' + value.toString(16)).substr(-2);
+        } */
+        colour = pastelColors[Math.abs(hash) % pastelColors.length];
+
+      }
+      // set colorHover to 10% lighter
+      var r = parseInt(colour.substr(1, 2), 16);
+      var g = parseInt(colour.substr(3, 2), 16);
+      var b = parseInt(colour.substr(5, 2), 16);
+      r = Math.min(Math.round(r * 1.2), 255);
+      g = Math.min(Math.round(g * 1.2), 255);
+      b = Math.min(Math.round(b * 1.2), 255);
+      
+      colourHover = '#' + r.toString(16).padStart(2, '0') + g.toString(16).padStart(2, '0') + b.toString(16).padStart(2, '0');
+
 
       return {
         '--nb-quarter-hours': (reservation.endDate.diff(reservation.startDate, 'minutes') / 15),
         '--diff-start-day': reservation.startDate.diff(startDate, 'minutes') / 15,
+        '--color': colour,
+        '--color-hover': colourHover,
       }
     },
     async handlePreviousWeekClick() {
@@ -263,6 +296,13 @@ export default {
         hour: hour
       });
       this.$router.push("/book2");
+    },
+    colorDiv(element) {
+
+      return {
+        'bg-[#ED916F] hover:bg-[#eab19d]': element.ownerId === 'ADMIN',
+        'bg-[#ED916F] hover:bg-[#cab2ff]': element.ownerId !== 'ADMIN'
+      }
     }
   }
 }
@@ -272,6 +312,11 @@ export default {
 .reservation {
   height: calc(var(--nb-quarter-hours) * 1.470588235%);
   top: calc(var(--diff-start-day) * 1.470588235% + 5.882352941%);
+  background-color: var(--color);
+}
+
+.reservation:hover {
+  background-color: var(--color-hover);
 }
 
 .reservation:first-of-type {
