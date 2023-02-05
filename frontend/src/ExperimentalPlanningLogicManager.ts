@@ -257,10 +257,10 @@ class ExperimentalPlanningLogicManager {
         }
     }
 
-    resetToToday(): void {
+    resetToToday(i = 1): void {
         this.currentWeek = moment();
         // minus 1 day to get the correct week
-        this.currentWeek.subtract(1, "days");
+        this.currentWeek.subtract(i, "days");
         // this.currentWeek = moment(new Date(2022, 7, 25, 12));
     }
 
