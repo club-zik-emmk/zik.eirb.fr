@@ -101,11 +101,11 @@
           class="h-full flex-1 relative border-r-[1px] border-black last:border-0 relative bg-[#1f1f1f]">
 
           <div class="absolute w-full flex items-center justify-center h-[5.882352941%] bg-[#2F2F2F]">
-            <span>{{ this.days[dayIndex - 1] }}</span>
+            <span>{{ this.days[dayIndex] }}</span>
           </div>
 
           <div v-for="hour in 16" :key="hour" class="h-[5.882352941%] border-b-2 border-black hover:bg-[#595959]"
-            @click="toBookingVue(this.planningManager.getCurrentWeek(), dayIndex - 1, hour)"></div>
+            @click="toBookingVue(this.planningManager.getCurrentWeek(), dayIndex, hour)"></div>
 
           <div v-for="element in this.reservations[dayIndex]" :key="element.startDate"
             :style="getReservationStyle(element)"
@@ -156,6 +156,7 @@ export default {
     },
     days() {
       return [
+        "Dimanche",
         "Lundi",
         "Mardi",
         "Mercredi",
@@ -289,7 +290,7 @@ export default {
       window.location.reload();
     },
     toBookingVue(week, day, hour) {
-      week.startOf('week').add(1, 'day');
+      week.startOf('week').add(0, 'day');
       this.$store.dispatch("setBookingDay", {
         week: week,
         day: day,

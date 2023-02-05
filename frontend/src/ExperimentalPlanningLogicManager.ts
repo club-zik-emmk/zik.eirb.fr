@@ -163,7 +163,8 @@ class ExperimentalPlanningLogicManager {
      * 
      */
     getClickedDay(): Day & { serialized: string } {
-        const dayIndex = store.state.bookingDay.day+1;
+        const dayIndex = store.state.bookingDay.day;
+        console.log(dayIndex);
         return {
             disponibilities: this.disponibilitiesWindow[1][dayIndex],
             reservations: this.reservationWindow[1][dayIndex],
@@ -248,6 +249,7 @@ class ExperimentalPlanningLogicManager {
     }
 
     async setWeek(date: Moment) {
+        console.log("BLABLA");
         this.currentWeek = date.clone();
 
         for (let weekIndex of [1, 2, 0]) {
@@ -257,6 +259,8 @@ class ExperimentalPlanningLogicManager {
 
     resetToToday(): void {
         this.currentWeek = moment();
+        // minus 1 day to get the correct week
+        this.currentWeek.subtract(1, "days");
         // this.currentWeek = moment(new Date(2022, 7, 25, 12));
     }
 

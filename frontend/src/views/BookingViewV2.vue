@@ -179,13 +179,13 @@ export default {
     },
     days(index) {
       return [
+        "Dimanche",
         "Lundi",
         "Mardi",
         "Mercredi",
         "Jeudi",
         "Vendredi",
         "Samedi",
-        "Dimanche",
       ][index];
     },
 
