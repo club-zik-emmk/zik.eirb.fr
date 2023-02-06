@@ -261,6 +261,7 @@ class ExperimentalPlanningLogicManager {
         this.currentWeek = moment();
         // minus 1 day to get the correct week
         this.currentWeek.subtract(i, "days");
+        console.log(this.currentWeek);
         // this.currentWeek = moment(new Date(2022, 7, 25, 12));
     }
 

@@ -140,7 +140,7 @@ export default {
     this.$store.dispatch('resetClickedDay');
     this.$store.dispatch('setLastCacheRefresh', -1);
 
-    this.planningManager.resetToToday();
+    this.planningManager.resetToToday(0);
     await this.planningManager.refreshWeek();
 
     this.$store.dispatch("setClickedDay", await this.planningManager.getClickedDay());
