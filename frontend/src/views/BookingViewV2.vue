@@ -58,7 +58,7 @@
       <div class="w-full flex justify-center">
         <div class="w-full h-72 bg-[#2F2F2F]  rounded-lg overflow-hidden mb-10" v-if="!isAdminReservation">
           <input type="text" class="w-full h-12 outline-none text-black px-5" v-model="searchQuery"
-            @input="handleSearch" />
+            @input="handleSearch" v-on:keyup.enter="handleEnter"/>
 
           <div class="flex flex-col overflow-y-auto shrink-0 h-[90%]">
             <div v-for="user in users"
@@ -152,6 +152,11 @@ export default {
         }).catch(console.error);
       }
     },
+    handleEnter() {
+      if (this.users.length === 1) {
+        this.handleUserClick(this.users[0]);
+      }
+    },
     handleSearch() {
       if (this.searchQuery.length === 0) {
         this.users = this.usersBackup;
@@ -167,8 +172,12 @@ export default {
         this.selectedUsers = this.selectedUsers.filter((selectedUser) => {
           return selectedUser !== user;
         });
+        this.searchQuery = "";
+        this.handleSearch();
       } else {
         this.selectedUsers.push(user);
+        this.searchQuery = "";
+        this.handleSearch();
       }
     },
     fetchUsers() {

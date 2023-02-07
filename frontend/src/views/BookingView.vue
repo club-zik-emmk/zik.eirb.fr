@@ -163,8 +163,12 @@ export default {
         this.selectedUsers = this.selectedUsers.filter((selectedUser) => {
           return selectedUser !== user;
         });
+        this.searchQuery = "";
+        this.handleSearch();
       } else {
         this.selectedUsers.push(user);
+        this.searchQuery = "";
+        this.handleSearch();
       }
     },
     fetchUsers() {
