@@ -62,14 +62,16 @@ class ExperimentalPlanningLogicManager {
             const endDateMinute = parseInt(reservation.endDate.split("T")[1].split(":")[1]);
 
             // Parse starting date but set the time to 00:00:00
-            const startDate = moment(reservation.startDate);
+            const startDateText = reservation.startDate.split("T")[0] + "+02:00"
+            const startDate = moment(startDateText);
             startDate.set("hour", startDateHour);
             startDate.set("minute", startDateMinute);
             
             // Parse ending date but set the time to 23:59:59
-            const endDate = moment(reservation.endDate);
+            const endDateText = reservation.endDate.split("T")[0] + "+02:00"
+            const endDate = moment(endDateText);
             endDate.set("hour", endDateHour);
-            endDate.set("minute", endDateMinute);   
+            endDate.set("minute", endDateMinute);
 
             return {
                 ...reservation,
