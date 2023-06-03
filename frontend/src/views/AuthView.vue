@@ -39,7 +39,7 @@ export default {
   name: "AuthView",
   computed: {
     authUrl() {
-      return `https://cas.bordeaux-inp.fr/login?service=https://aboin.vvv.enseirb-matmeca.fr/casAuth/?token=${window.btoa(`${import.meta.env.VITE_FRONTEND_ADDRESS}/#/auth`)}@bordeaux-inp.fr`;
+      return `https://cas.bordeaux-inp.fr/login?service=${encodeURIComponent("https://zik.eirb.fr/#/auth")}`;
     },
   },
   mounted() {

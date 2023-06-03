@@ -2,6 +2,15 @@ import {Request, Response} from "express";
 import {User} from "../models";
 import axios from "axios";
 
+interface BordeauxInpCasResponse {
+    serviceResponse: {
+        authenticationSuccess?: {
+            user: string;
+        }
+    }
+}
+
+
 /**
  * Validates a CAS ticket and returns the username of the user who owns the ticket.
  *
@@ -12,10 +21,18 @@ import axios from "axios";
  * @returns {Promise<string | null>} The username of the user who owns the ticket or null if the ticket is invalid.
  */
 async function validateCasTicket(casServerUrl: string, serviceUrl: string, ticket: string): Promise<string | null> {
-    const response = await axios.get(`${casServerUrl}/serviceValidate?service=${encodeURIComponent(serviceUrl)}&ticket=${ticket}`);
-    const body = await response.data;
+    const response = await axios.get<BordeauxInpCasResponse>(
+        `${casServerUrl}/serviceValidate?service=${encodeURIComponent(
+            serviceUrl
+        )}&ticket=${ticket}&format=json`
+    );
+    const body = response.data;
 
-    return (body.split('<cas:user>')[1] || "").split('</cas:user>')[0] || null;
+    if (!body.serviceResponse.authenticationSuccess) {
+        return null;
+    }
+
+    return body.serviceResponse.authenticationSuccess.user;
 }
 
 
@@ -29,41 +46,21 @@ async function validateCasTicket(casServerUrl: string, serviceUrl: string, ticke
  */
 async function authenticate(request: Request, response: Response): Promise<void> {
     // Handle the case where the user sends a wrong request
-    if (!request.query.ticket || !request.query.token) {
+    if (!request.query.ticket || typeof request.query.ticket !== 'string') {
         response.status(400).json({
             success: false,
             error: {
-                message: 'Missing ticket or token'
+                message: 'Invalid or missing ticket'
             }
         });
         return;
     }
-
-    // Extract the ticket and the token from the request
-    const ticket: string = `${request.query.ticket}`;
-    const token: string = `${request.query.token}`;
-    const [serviceEncoded, domain] = token.split('@');
-
-    // Check that that isn't some nasty hacker
-    if (domain !== 'bordeaux-inp.fr') {
-        response.status(400).json({
-            success: false,
-            error: {
-                message: 'Invalid CAS server'
-            }
-        });
-        return;
-    }
-
-    // Decode the service
-    const casServiceUrl = `https://aboin.vvv.enseirb-matmeca.fr/casAuth/?token=${serviceEncoded}@${domain}`;
-    const casServerUrl = `https://cas.${domain}`;
 
     // Validate the ticket
     const username = await validateCasTicket(
-        casServerUrl,
-        casServiceUrl,
-        ticket
+        "https://cas.bordeaux-inp.fr",
+        "https://zik.eirb.fr/#/auth",
+        request.query.ticket
     );
 
     // If the ticket is invalid, return an error
