@@ -123,7 +123,6 @@ export default {
       }
 
       const day = this.selectedDay();
-      console.log(day);
 
 
       // Format to "YYYY-MM-DD HH:mm:ss"
@@ -228,7 +227,6 @@ export default {
     clickedDay() {
       let dayIndex = this.$store.state.bookingDay.day;
       let mom = this.selectedDay();
-      console.log(mom.toString());
       // create string "Mercredi 25 Janvier 2023"
       let day = mom.toString().split("-")[2];
       let month = parseInt(mom.toString().split("-")[1]);

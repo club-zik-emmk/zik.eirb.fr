@@ -62,13 +62,13 @@ class ExperimentalPlanningLogicManager {
             const endDateMinute = parseInt(reservation.endDate.split("T")[1].split(":")[1]);
 
             // Parse starting date but set the time to 00:00:00
-            const startDateText = reservation.startDate.split("T")[0] + "+02:00"
+            const startDateText = reservation.startDate.split("Z")[0] + "+02:00"
             const startDate = moment(startDateText);
             startDate.set("hour", startDateHour);
             startDate.set("minute", startDateMinute);
             
             // Parse ending date but set the time to 23:59:59
-            const endDateText = reservation.endDate.split("T")[0] + "+02:00"
+            const endDateText = reservation.endDate.split("Z")[0] + "+02:00"
             const endDate = moment(endDateText);
             endDate.set("hour", endDateHour);
             endDate.set("minute", endDateMinute);
@@ -166,7 +166,6 @@ class ExperimentalPlanningLogicManager {
      */
     getClickedDay(): Day & { serialized: string } {
         const dayIndex = store.state.bookingDay.day;
-        console.log(dayIndex);
         return {
             disponibilities: this.disponibilitiesWindow[1][dayIndex],
             reservations: this.reservationWindow[1][dayIndex],
@@ -251,7 +250,6 @@ class ExperimentalPlanningLogicManager {
     }
 
     async setWeek(date: Moment) {
-        console.log("BLABLA");
         this.currentWeek = date.clone();
 
         for (let weekIndex of [1, 2, 0]) {
@@ -263,7 +261,6 @@ class ExperimentalPlanningLogicManager {
         this.currentWeek = moment();
         // minus 1 day to get the correct week
         this.currentWeek.subtract(i, "days");
-        console.log(this.currentWeek);
         // this.currentWeek = moment(new Date(2022, 7, 25, 12));
     }
 

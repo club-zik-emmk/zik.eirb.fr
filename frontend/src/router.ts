@@ -24,7 +24,6 @@ const routes: Route[] = [
         path: "/planning",
         name: "Planning",
         component: () => {
-            console.log(window.innerWidth);
             if (window.innerWidth < 768) {  // mobile
                 return import("@/views/PlanningView.vue");
             } else {

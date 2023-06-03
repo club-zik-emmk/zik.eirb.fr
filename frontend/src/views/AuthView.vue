@@ -44,11 +44,17 @@ export default {
   },
   mounted() {
     // Check if the user is already authenticated by looking for ticket and token in the url
-    const token = this.$route.query.token;
-    const ticket = this.$route.query.ticket;
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const ticket = urlParams.get("ticket");
+    
+    // Remove the ticket from the url
+    const newUrl = window.location.href.replace(`?ticket=${ticket}`, "");
+    window.history.pushState({}, null, newUrl);
+
     // Authenticate the user by using the backend API
-    if (token && ticket) {
-      authenticateUser(`${ticket}`, `${token}`)
+    if (ticket) {
+      authenticateUser(`${ticket}`)
           .then(student => {
             // Send the student to the header
             this.$store.commit("setUser", student);

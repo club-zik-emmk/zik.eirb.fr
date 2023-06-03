@@ -74,9 +74,7 @@ export default {
 
     // If route is different than /auth, we check if user is authenticated
     if (this.routeName !== 'Authentification') {
-      axiosInstance.get('/api/v1/me').then(() => {
-        console.log("Why the fuck is this accepted");
-      }).catch(() => {
+      axiosInstance.get('/api/v1/me').catch(() => {
         console.log("User not authenticated");
         this.$store.dispatch("resetUser");
         this.$router.push("/auth");
