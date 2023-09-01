@@ -68,7 +68,7 @@ const holidays = [
     {
         "name": "Vacances d'Été",
         "start": "2023-05-31",
-        "end": "2023-09-01"
+        "end": "2024-09-01" //this change is temporary, to fix reservation endTime for the year 2023/2024
     }];
 
 const holidaysDisponibilities = []
