@@ -74,7 +74,7 @@ export default {
     }
 
     // Get all weeks from 1st of september 2022 to 1st of august 2023
-    this.weeks = weeks(moment(new Date(2022, 8, 1)), moment(new Date(2023, 7, 1)));
+    this.weeks = weeks(moment(new Date(2023, 8, 1)), moment(new Date(2024, 7, 1)));
   },
   methods: {
     handleWeekClick(week) {
