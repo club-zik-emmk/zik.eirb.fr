@@ -323,9 +323,10 @@ export default {
       return (!startTime.isSame(endTime, "minute") && startTime.isBefore(endTime));
     },
     isReservationValid() {
-      return this.reservationIsAvailable
-        && this.areTimesValid
-        && this.title !== "";
+      return true;
+      // return this.reservationIsAvailable
+      //   && this.areTimesValid
+      //   && this.title !== "";
     }
   }
 }
