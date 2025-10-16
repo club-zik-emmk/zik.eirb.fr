@@ -273,8 +273,8 @@ export default {
       return (!startTime.isSame(endTime, "minute") && startTime.isBefore(endTime));
     },
     isReservationValid() {
-      return true; //temporaire
-      // return  True this.reservationIsAvailable
+      return true; // temporaire pour les tests
+      // return this.reservationIsAvailable
       //   && this.areTimesValid
       //   && this.title !== "";
     }
