@@ -113,10 +113,10 @@
 
           <div v-for="element in this.reservations[dayIndex]" :key="element.startDate"
             :style="getReservationStyle(element)"
-            class="reservation w-full absolute bg-[#ee5253] duration-300 hover:cursor-pointer py-2 flex flex-col justify-evenly items-center"
+            class="reservation w-full absolute duration-300 hover:cursor-pointer py-2 flex flex-row justify-center items-center gap-1"
             @click="this.handleReservationClick(element)">
+            <span v-if="!element.allowNoise" class="text-sm">🔕</span>
             <span class="font-semibold" style="margin: 5px; text-align: center;">{{ element.title }}</span>
-            <span v-if="!element.allowNoise" class="text-xs">🔕 Ne pas déranger</span>
           </div>
 
         </div>
