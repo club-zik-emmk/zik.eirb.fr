@@ -1,28 +1,25 @@
 require("dotenv").config();
 
 module.exports = {
-    development: {
-        dialect: "mysql",
-        database: process.env.MYSQL_DB_NAME,
-        username: process.env.MYSQL_DB_USERNAME,
-        password: process.env.MYSQL_DB_PASSWORD,
-        host: process.env.MYSQL_DB_HOST,
-        port: parseInt(process.env.MYSQL_DB_PORT)
-    },
-    test: {
-        dialect: "mysql",
-        database: process.env.MYSQL_DB_NAME,
-        username: process.env.MYSQL_DB_USERNAME,
-        password: process.env.MYSQL_DB_PASSWORD,
-        host: process.env.MYSQL_DB_HOST,
-        port: parseInt(process.env.MYSQL_DB_PORT)
-    },
-    production: {
-        dialect: "mysql",
-        database: process.env.MYSQL_DB_NAME,
-        username: process.env.MYSQL_DB_USERNAME,
-        password: process.env.MYSQL_DB_PASSWORD,
-        host: process.env.MYSQL_DB_HOST,
-        port: parseInt(process.env.MYSQL_DB_PORT)
-    }
+  development: {
+    username: "zik_user",
+    password: "zik_password",
+    database: "zik_db",
+    host: "127.0.0.1",
+    dialect: "mysql",
+  },
+  test: {
+    username: "zik_user",
+    password: "zik_password",
+    database: "zik_db_test",
+    host: "127.0.0.1",
+    dialect: "mysql",
+  },
+  production: {
+    username: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: process.env.DB_NAME,
+    host: process.env.DB_HOST,
+    dialect: "mysql",
+  },
 };
