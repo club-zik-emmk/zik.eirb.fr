@@ -139,6 +139,7 @@ module.exports = {
             id: "admin_test",
             firstName: "Admin",
             lastName: "Test",
+            displayName: "Admin Test",
             group: "dev",
             year: 2099,
             admin: true,
