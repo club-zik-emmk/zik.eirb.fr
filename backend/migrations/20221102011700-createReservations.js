@@ -38,7 +38,7 @@ module.exports = {
                 type: DataTypes.BOOLEAN,
                 allowNull: false,
                 defaultValue: true
-            },
+            }
         });
     },
     down: async (queryInterface) => {
