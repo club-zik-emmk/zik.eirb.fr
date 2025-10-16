@@ -37,7 +37,8 @@ export async function validateCasTicket(
         )}&ticket=${ticket}`
     );
     const body = await response.data;
-    const username = body.split("<cas:user>")[1]?.split("</cas:user>")[0] || null;
-
+    const parts = body.split("<cas:user>");
+    if (parts.length < 2) return null;
+    const username = parts[1].split("</cas:user>")[0] || null;
     return username;
 }
