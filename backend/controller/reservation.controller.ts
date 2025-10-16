@@ -109,16 +109,11 @@ async function createOrUpdateReservation(req: Request, res: Response) {
     }
 
     try {
-        const ownerId =
-            (req.session && req.session.user && req.session.user.id)
-            || req.body.ownerId
-            || "ANONYMOUS";
-
         const insertedReservation = await Reservation.create({
             title: req.body.title,
             startDate: req.body.startDate,
             endDate: req.body.endDate,
-            ownerId: ownerId,
+            ownerId: req.session.user.id,
             allowNoise: typeof req.body.allowNoise !== "undefined" ? req.body.allowNoise : true,
         });
 
