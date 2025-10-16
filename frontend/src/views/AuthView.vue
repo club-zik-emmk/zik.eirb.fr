@@ -25,16 +25,9 @@
       </div>
 
       <div class="flex flex-col gap-4">
-        <a :href="authUrl"
-           class="btn mb-4 lg:mb-0 w-fit px-5 py-3 rounded-lg bg-[#8DD18A] hover:bg-[#b1d1af] duration-300 hover:cursor-pointer text-black font-semibold">
+        <a :href="authUrl" class="btn mb-4 lg:mb-0 w-fit px-5 py-3 rounded-lg bg-[#8DD18A] hover:bg-[#b1d1af] duration-300 hover:cursor-pointer text-black font-semibold">
           Se connecter avec le CAS
         </a>
-
-        <!-- Bouton de test pour le développement local -->
-        <button @click="loginAsAdmin" 
-                class="btn mb-4 lg:mb-0 w-fit px-5 py-3 rounded-lg bg-[#EF9270] hover:bg-[#edb39e] duration-300 hover:cursor-pointer text-black font-semibold">
-          Connexion locale (Admin)
-        </button>
       </div>
     </div>
   </main>
@@ -49,18 +42,6 @@ export default {
     authUrl() {
       return `https://cas.bordeaux-inp.fr/login?service=${encodeURIComponent("https://zik.eirb.fr/#/auth")}`;
     },
-  },
-  methods: {
-    loginAsAdmin() {
-      // Simule une connexion admin
-      const testUser = {
-        id: "admin_test",
-        admin: true,
-        member: true
-      };
-      this.$store.commit("setUser", testUser);
-      this.$router.push("/");
-    }
   },
   mounted() {
     // Check if the user is already authenticated by looking for ticket and token in the url
