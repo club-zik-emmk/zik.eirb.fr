@@ -1,16 +1,20 @@
 import express from "express";
 
 import reservationController from "../controller/reservation.controller";
-import { isConnected, isMember, isAdmin} from "../middlewares/permission.middleware";
-
+import { isConnected, isAdmin } from "../middlewares/permission.middleware";
 
 const router = express.Router();
 
 router.get("/", reservationController.listAllReservations);
 router.get("/:id", reservationController.getReservationById);
 
-router.post("/", isConnected(), isMember(), reservationController.createOrUpdateReservation);
-router.post("/admin", isConnected(), isAdmin(), reservationController.createAdminReservation);
-router.delete("/:id", isConnected(), isMember(), reservationController.deleteReservationById);
+// Pour le développement local, commentez isConnected()
+// router.post("/", isConnected(), reservationController.createReservation);
+// router.post("/admin", isConnected(), isAdmin(), reservationController.createAdminReservation);
+router.post("/", reservationController.createReservation);
+router.post("/admin", reservationController.createAdminReservation);
+
+router.put("/:id", isConnected(), reservationController.updateReservation);
+router.delete("/:id", isConnected(), reservationController.deleteReservationById);
 
 export default router;
