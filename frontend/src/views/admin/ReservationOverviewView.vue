@@ -191,27 +191,19 @@ export default {
       let colour = '#';
       let colourHover = '#';
       let str = reservation.ownerId;
-      // special color for "do not disturb"
-      if (reservation.allowNoise === false) {
-        colour = '#2BAF9E';
-      } else if (str === 'ADMIN') {
+
+      if (str === 'ADMIN') {
         colour = '#e17055';
       }
       else if (str === 'ngrall002') {
         colour = '#981DDD';
       }
       else {
-
         var hash = 0;
         for (var i = 0; i < str.length; i++) {
           hash = str.charCodeAt(i) + ((hash << 5) - hash);
         }
-        /* for (var i = 0; i < 3; i++) {
-          var value = (hash >> (i * 8)) & 0xFF;
-          colour += ('00' + value.toString(16)).substr(-2);
-        } */
         colour = pastelColors[Math.abs(hash) % pastelColors.length];
-
       }
       // set colorHover to 10% lighter
       var r = parseInt(colour.substr(1, 2), 16);
@@ -222,7 +214,6 @@ export default {
       b = Math.min(Math.round(b * 1.2), 255);
       
       colourHover = '#' + r.toString(16).padStart(2, '0') + g.toString(16).padStart(2, '0') + b.toString(16).padStart(2, '0');
-
 
       return {
         '--nb-quarter-hours': (reservation.endDate.diff(reservation.startDate, 'minutes') / 15),
