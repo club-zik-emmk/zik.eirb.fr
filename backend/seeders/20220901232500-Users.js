@@ -134,6 +134,17 @@ module.exports = {
             member: true,
             createdAt: new Date(),
             updatedAt: new Date()
+        },
+        {
+            id: "admin_test",
+            firstName: "Admin",
+            lastName: "Test",
+            group: "dev",
+            year: 2099,
+            admin: true,
+            member: true,
+            createdAt: new Date(),
+            updatedAt: new Date()
         }
     ], {});
     },
