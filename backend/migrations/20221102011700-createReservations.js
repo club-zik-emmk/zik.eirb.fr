@@ -34,6 +34,11 @@ module.exports = {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
+            allowNoise: {
+                type: DataTypes.BOOLEAN,
+                allowNull: false,
+                defaultValue: true
+            },
         });
     },
     down: async (queryInterface) => {
