@@ -36,12 +36,16 @@
 
 
 
+        <!-- Selected reservation details -->
         <div class="w-full flex flex-col">
           <span class="font-semibold mb-2">#{{ selectedReservation.id }}</span>
           <span class="text-2xl font-bold mb-2">{{ selectedReservation.title }}</span>
           <span class="text-sm mb-2">Réservé par <span class="font-bold">{{ selectedReservation.ownerId }}</span></span>
           <span class="mb-2">
             De {{ selectedReservation.startDate.format("HH:mm") }} à {{ selectedReservation.endDate.format("HH:mm") }}
+          </span>
+          <span v-if="!selectedReservation.allowNoise" class="mb-2 text-sm font-semibold text-[#2BAF9E]">
+            🔕 Ne pas déranger
           </span>
 
           <ul v-show="selectedReservation.users.length > 0" class="list-disc pl-5 mt-2">
@@ -109,9 +113,10 @@
 
           <div v-for="element in this.reservations[dayIndex]" :key="element.startDate"
             :style="getReservationStyle(element)"
-            class="reservation w-full absolute bg-[#ee5253] duration-300 hover:cursor-pointer py-2 flex justify-evenly items-center"
+            class="reservation w-full absolute bg-[#ee5253] duration-300 hover:cursor-pointer py-2 flex flex-col justify-evenly items-center"
             @click="this.handleReservationClick(element)">
             <span class="font-semibold" style="margin: 5px; text-align: center;">{{ element.title }}</span>
+            <span v-if="!element.allowNoise" class="text-xs">🔕 Ne pas déranger</span>
           </div>
 
         </div>
