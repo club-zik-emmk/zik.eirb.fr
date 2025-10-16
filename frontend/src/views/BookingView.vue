@@ -45,6 +45,11 @@
           </div>
         </div>
 
+        <div class="w-full mt-3">
+          <input type="checkbox" class="mr-3" v-model="doNotDisturb" />
+          <span>Ne pas être dérangé durant cette réservation</span>
+        </div>
+
         <div class="w-full mt-5" v-if="isUserAdmin">
           <input type="checkbox" class="mr-5" v-model="isAdminReservation">
           <span>Réservation administrateur </span>
@@ -105,6 +110,7 @@ export default {
       usersBackup: [],
       selectedUsers: [],
       isAdminReservation: false,
+      doNotDisturb: false,
     }
   },
   created() {
@@ -132,6 +138,7 @@ export default {
           startDate: formattedStartTime,
           endDate: formattedEndTime,
           ownerId: "ADMIN",
+          allowNoise: !this.doNotDisturb,
           users: []
         }).then(() => {
           this.$router.push("/planning");
@@ -142,6 +149,7 @@ export default {
           startDate: formattedStartTime,
           endDate: formattedEndTime,
           ownerId: this.$store.state.user.id,
+          allowNoise: !this.doNotDisturb,
           users: this.selectedUsers
         }).then(() => {
           this.$router.push("/planning");

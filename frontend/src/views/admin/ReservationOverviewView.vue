@@ -186,10 +186,13 @@ export default {
       let colour = '#';
       let colourHover = '#';
       let str = reservation.ownerId;
-      if (str === 'ADMIN') {
+      // special color for "do not disturb"
+      if (reservation.allowNoise === false) {
+        colour = '#2BAF9E';
+      } else if (str === 'ADMIN') {
         colour = '#e17055';
       }
-      else if (str === 'ngry') {
+      else if (str === 'ngrall002') {
         colour = '#981DDD';
       }
       else {

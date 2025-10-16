@@ -29,8 +29,12 @@
       </div>
 
       <div class="flex flex-col flex-wrap">
-        <div class="font-bold text-[90%]">{{ reservation.title }} <span class="text-xs font-normal">(<span
-            class="text-[#cccccc]">{{ reservation.ownerId }}</span>)</span></div>
+        <div class="font-bold text-[90%]">
+          {{ reservation.title }}
+          <span class="text-xs font-normal">(<span class="text-[#cccccc]">{{ reservation.ownerId }}</span>)</span>
+          <!-- small badge for "do not disturb" -->
+          <span v-if="reservation.allowNoise === false" class="ml-2 text-xs bg-[#2BAF9E] text-black px-2 py-0.5 rounded-full">🔕 Ne pas déranger</span>
+        </div>
         <div>
           <div class="text-xs flex items-center">
             {{ this.padDate(reservation.startDate) }}

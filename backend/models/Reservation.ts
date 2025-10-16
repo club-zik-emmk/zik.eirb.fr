@@ -37,6 +37,8 @@ export class Reservation extends Model<
     declare createdAt: CreationOptional<Date>;
     declare updatedAt: CreationOptional<Date>;
     declare ownerId: string;
+    // whether members are allowed to make noise during this reservation
+    declare allowNoise: boolean;
 
     // Reservation belongsTo User (as Owner)
     declare owner?: NonAttribute<User>;
@@ -94,6 +96,11 @@ export class Reservation extends Model<
             ownerId: {
                 type: DataTypes.STRING,
                 allowNull: false,
+            },
+            allowNoise: {
+                type: DataTypes.BOOLEAN,
+                allowNull: false,
+                defaultValue: true,
             },
         }, {
             sequelize,

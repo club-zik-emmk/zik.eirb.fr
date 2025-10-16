@@ -34,6 +34,7 @@ async function listAllReservations(req: Request, res: Response) {
             startDate: reservation.startDate,
             endDate: reservation.endDate,
             ownerId: reservation.ownerId,
+            allowNoise: typeof reservation.allowNoise !== "undefined" ? reservation.allowNoise : true,
             users: users
         });
     }
@@ -62,6 +63,7 @@ function getReservationById(req: Request, res: Response) {
                     startDate: reservation.startDate,
                     endDate: reservation.endDate,
                     ownerId: reservation.ownerId,
+                    allowNoise: typeof reservation.allowNoise !== "undefined" ? reservation.allowNoise : true,
                     users: userIds
                 };
                 return success(res, "Réservation", "RESERVATION/GET", resWithUsers);
@@ -101,12 +103,18 @@ async function createOrUpdateReservation(req: Request, res: Response) {
         return error(res, "La date de début doit être avant la date de fin", "VALIDATION/START_DATE_BEFORE_END_DATE");
     }
 
+    // validate allowNoise if provided
+    if (typeof req.body.allowNoise !== "undefined" && typeof req.body.allowNoise !== "boolean") {
+        return error(res, "allowNoise doit être booléen", "VALIDATION/ALLOWNOISE_INVALID");
+    }
+
     try {
         const insertedReservation = await Reservation.create({
             title: req.body.title,
             startDate: req.body.startDate,
             endDate: req.body.endDate,
             ownerId: req.session.user.id,
+            allowNoise: typeof req.body.allowNoise !== "undefined" ? req.body.allowNoise : true,
         });
 
         if (req.body.users) {
@@ -146,6 +154,11 @@ async function createAdminReservation(req: Request, res: Response) {
     // check that startDate is before endDate
     if (new Date(req.body.startDate) >= new Date(req.body.endDate)) {
         return error(res, "La date de début doit être avant la date de fin", "VALIDATION/START_DATE_BEFORE_END_DATE");
+    }
+
+    // validate allowNoise if provided
+    if (typeof req.body.allowNoise !== "undefined" && typeof req.body.allowNoise !== "boolean") {
+        return error(res, "allowNoise doit être booléen", "VALIDATION/ALLOWNOISE_INVALID");
     }
 
     // Find all reservations overlapping with the new one
@@ -190,7 +203,8 @@ async function createAdminReservation(req: Request, res: Response) {
             title: req.body.title,
             startDate: startDate,
             endDate: endDate,
-            ownerId: req.body.ownerId
+            ownerId: req.body.ownerId,
+            allowNoise: typeof req.body.allowNoise !== "undefined" ? req.body.allowNoise : true,
         });
     } else {
         // Create a reservation for each day between startDate and endDate
@@ -203,7 +217,8 @@ async function createAdminReservation(req: Request, res: Response) {
             title: req.body.title,
             startDate: startDate,
             endDate: new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 22, 30),
-            ownerId: req.body.ownerId
+            ownerId: req.body.ownerId,
+            allowNoise: typeof req.body.allowNoise !== "undefined" ? req.body.allowNoise : true,
         });
 
         // Last reservation
@@ -211,7 +226,8 @@ async function createAdminReservation(req: Request, res: Response) {
             title: req.body.title,
             startDate: new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 8, 0),
             endDate: endDate,
-            ownerId: req.body.ownerId
+            ownerId: req.body.ownerId,
+            allowNoise: typeof req.body.allowNoise !== "undefined" ? req.body.allowNoise : true,
         });
 
         const currentDate = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 8, 0);
@@ -220,7 +236,8 @@ async function createAdminReservation(req: Request, res: Response) {
                 title: req.body.title,
                 startDate: currentDate,
                 endDate: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 22, 30),
-                ownerId: req.body.ownerId
+                ownerId: req.body.ownerId,
+                allowNoise: typeof req.body.allowNoise !== "undefined" ? req.body.allowNoise : true,
             };
             reservations.push(reservation);
             currentDate.setDate(currentDate.getDate() + 1);

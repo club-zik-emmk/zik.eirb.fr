@@ -45,6 +45,11 @@
           </div>
         </div>
 
+        <div class="w-full mt-3">
+          <input type="checkbox" class="mr-3" v-model="doNotDisturb" />
+          <span>Ne pas être dérangé durant cette réservation</span>
+        </div>
+
         <div class="w-full mt-5" v-if="isUserAdmin">
           <input type="checkbox" class="mr-5" v-model="isAdminReservation">
           <span>Réservation administrateur </span>
@@ -107,6 +112,7 @@ export default {
       usersBackup: [],
       selectedUsers: [],
       isAdminReservation: false,
+      doNotDisturb: false,
     }
   },
   created() {
@@ -117,40 +123,42 @@ export default {
     this.fetchUsers();
   },
   methods: {
-    onBookingButtonClick() {
-      if (!this.isReservationValid) {
-        return;
-      }
+      onBookingButtonClick() {
+        if (!this.isReservationValid) {
+          return;
+        }
 
-      const day = this.selectedDay();
+        const day = this.selectedDay();
 
 
-      // Format to "YYYY-MM-DD HH:mm:ss"
-      const formattedStartTime = `${day} ${this.startTime.hours.toString().padStart(2, "0")}:${this.startTime.minutes.toString().padStart(2, "0")}:00`;
-      const formattedEndTime = `${day} ${this.endTime.hours.toString().padStart(2, "0")}:${this.endTime.minutes.toString().padStart(2, "0")}:00`;
+        // Format to "YYYY-MM-DD HH:mm:ss"
+        const formattedStartTime = `${day} ${this.startTime.hours.toString().padStart(2, "0")}:${this.startTime.minutes.toString().padStart(2, "0")}:00`;
+        const formattedEndTime = `${day} ${this.endTime.hours.toString().padStart(2, "0")}:${this.endTime.minutes.toString().padStart(2, "0")}:00`;
 
-      if (this.isAdminReservation) {
-        axiosInstance.post("/api/v1/reservations/admin", {
-          title: this.title,
-          startDate: formattedStartTime,
-          endDate: formattedEndTime,
-          ownerId: "ADMIN",
-          users: []
-        }).then(() => {
-          this.$router.push("/planning");
-        }).catch(console.error);
-      } else {
-        axiosInstance.post("/api/v1/reservations", {
-          title: this.title,
-          startDate: formattedStartTime,
-          endDate: formattedEndTime,
-          ownerId: this.$store.state.user.id,
-          users: this.selectedUsers
-        }).then(() => {
-          this.$router.push("/planning");
-        }).catch(console.error);
-      }
-    },
+        if (this.isAdminReservation) {
+          axiosInstance.post("/api/v1/reservations/admin", {
+            title: this.title,
+            startDate: formattedStartTime,
+            endDate: formattedEndTime,
+            ownerId: "ADMIN",
+            allowNoise: !this.doNotDisturb,
+            users: []
+          }).then(() => {
+            this.$router.push("/planning");
+          }).catch(console.error);
+        } else {
+          axiosInstance.post("/api/v1/reservations", {
+            title: this.title,
+            startDate: formattedStartTime,
+            endDate: formattedEndTime,
+            ownerId: this.$store.state.user.id,
+            allowNoise: !this.doNotDisturb,
+            users: this.selectedUsers
+          }).then(() => {
+            this.$router.push("/planning");
+          }).catch(console.error);
+        }
+     },
     handleEnter() {
       if (this.users.length === 1) {
         this.handleUserClick(this.users[0]);

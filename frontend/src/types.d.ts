@@ -14,27 +14,28 @@ export type Disponibility = {
 };
 
 export type Reservation = {
-    id: number,
-    ownerId: string,
-    title: string,
-    startDate: Moment,
-    endDate: Moment,
-    createdAt: Moment | null,
-    updatedAt: Moment | null
+    id: number;
+    ownerId: string;
+    title: string;
+    startDate: Moment;
+    endDate: Moment;
+    allowNoise: boolean;
+    createdAt: Moment | null;
+    updatedAt: Moment | null;
 };
 
 export type Day = {
-    disponibilities: Disponibility[],
-    reservations: Reservation[],
-    dayIndex: number,
-    dayName: string,
-    isoString: string,
+    disponibilities: Disponibility[];
+    reservations: Reservation[];
+    dayIndex: number;
+    dayName: string;
+    isoString: string;
 };
 
 export interface IPlanningLogic {
-    getCurrentDay(callback: (day: Day) => void): Day,
-    getNextDay(callback: (day: Day) => void): Day,
-    getPreviousDay(callback: (day: Day) => void): Day,
-    getNextWeek(callback: (days: Day[]) => void): void,
-    getPreviousWeek(callback: (days: Day[]) => void): void,
+    getCurrentDay(callback: (day: Day) => void): Day;
+    getNextDay(callback: (day: Day) => void): Day;
+    getPreviousDay(callback: (day: Day) => void): Day;
+    getNextWeek(callback: (days: Day[]) => void): void;
+    getPreviousWeek(callback: (days: Day[]) => void): void;
 }

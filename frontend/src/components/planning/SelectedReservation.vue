@@ -32,6 +32,7 @@
       <span class="mb-2">
         De {{ reservation.startDate.format("HH:mm") }} à {{ reservation.endDate.format("HH:mm") }}
       </span>
+      <div v-if="reservation.allowNoise === false" class="mb-2 text-sm font-semibold text-[#2BAF9E]">🔕 Ne pas être dérangé</div>
       <span>Réservé par <span class="font-semibold">{{ reservation.ownerId }}</span></span>
 
       <ul v-show="reservation.users.length > 0" class="list-disc pl-5 mt-2">
