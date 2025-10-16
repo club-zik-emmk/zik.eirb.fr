@@ -9,12 +9,12 @@ router.get("/", reservationController.listAllReservations);
 router.get("/:id", reservationController.getReservationById);
 
 // Pour le développement local, commentez isConnected()
-// router.post("/", isConnected(), reservationController.createReservation);
+// router.post("/", isConnected(), reservationController.createOrUpdateReservation);
 // router.post("/admin", isConnected(), isAdmin(), reservationController.createAdminReservation);
-router.post("/", reservationController.createReservation);
+router.post("/", reservationController.createOrUpdateReservation);
 router.post("/admin", reservationController.createAdminReservation);
 
-router.put("/:id", isConnected(), reservationController.updateReservation);
+router.put("/:id", isConnected(), reservationController.createOrUpdateReservation);
 router.delete("/:id", isConnected(), reservationController.deleteReservationById);
 
 export default router;
